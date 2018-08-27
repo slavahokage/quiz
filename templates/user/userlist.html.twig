@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+{% block title %}Quiz site{% endblock %}
+{% block body %}
+    <blockquote class="blockquote text-center">
+        <h1>User list</h1>
+    </blockquote>
+    <table id="articles" class="table table-striped">
+        <thead>
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Username
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                isActive
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for u in user %}
+            <tr>
+                <td>
+                    {{ u.id }}
+                </td>
+                <td>
+                    {{ u.username }}
+                </td>
+                <td>
+                    {{ u.email }}
+                </td>
+                <td>
+                    {% if u.isActive == 1 %}
+                        <div class="form-check">
+                            <input id = "{{ u.id }}" class="form-check-input" type="checkbox" value="" checked="">
+                        </div>
+                    {% else %}
+                        <div class="form-check">
+                            <input id = "{{ u.id }}" class="form-check-input" type="checkbox" value="" unchecked="">
+                        </div>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src='{{ asset('js/userlist.js ') }}'></script>
+{% endblock %}

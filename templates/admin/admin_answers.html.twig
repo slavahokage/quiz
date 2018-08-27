@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+{% block title %}Quiz site{% endblock %}
+{% block body %}
+
+    <blockquote class="blockquote text-center">
+        <h1>Create answers</h1>
+    </blockquote>
+    {% if error is defined %}
+        <p class="text-danger">{{ error }}</p>
+    {% endif %}
+    {{ form_start(form) }}
+    {{ form_row(form.title) }}
+    <hr>
+    <h1>Add answer</h1>
+
+    <ul class="tags list-group" data-prototype="{{ form_widget(form.answers.vars.prototype)|e('html_attr') }}">
+        {% for a in form.answers %}
+            <li>
+                {{ form_row(a.title) }}
+                {{ form_row(a.isCorrect) }}
+            </li>
+        {% endfor %}
+    </ul>
+
+    {{ form_row(form.nextAnswer) }}
+    {{ form_end(form) }}
+{% endblock %}
+{% block javascripts %}
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src='{{ asset('js/adminAnswers.js ') }}'></script>
+    <script src='{{ asset('js/ajaxAutocomplete.js ') }}'></script>
+
+{% endblock %}
+
+
+
+
+
+

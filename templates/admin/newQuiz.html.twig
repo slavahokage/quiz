@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+{% block title %}Quiz site{% endblock %}
+{% block body %}
+    <blockquote class="blockquote text-center">
+        <h1>New quiz</h1>
+    </blockquote>
+
+        {{form_start(form)}}
+        {{form_widget(form)}}
+        {{form_end(form)}}
+
+
+{% endblock %}

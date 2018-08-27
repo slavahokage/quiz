@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+{% block title %}Quiz site{% endblock %}
+{% block body %}
+    <blockquote class="blockquote text-center">
+        <h1>Edit quiz</h1>
+    </blockquote>
+    <hr>
+    {% if quizzes %}
+        {% for quiz in quizzes %}
+            {% if loop.index is odd %}
+                <ol class="breadcrumb" style="background-color: lightblue">
+                    <div class="jumbotron-fluid red">
+                        <h1 class="display-5">{{ quiz.title }}</h1>
+                        <p class="lead">{{ quiz.description }}</p>
+                        <hr class="my-4">
+                        <p>Press the button to edit the quiz or disable quiz.</p>
+                        <p class="lead">
+                            <a class="btn btn-primary btn-lg"
+                               href="{{ path('admin_edit_questions', {'quiz': quiz.id}) }}"
+                               role="button" id="{{ quiz.id }}">Edit!</a>
+                            {% if quiz.isActive == 1 %}
+                                <a class="btn btn-primary btn-lg"
+                                   href="{{ path('disable_quiz', {'quiz': quiz.id}) }}"
+                                   role="button" id="{{ quiz.id }}">Disable this quiz!</a>
+                            {% else %}
+                                <a class="btn btn-primary btn-lg"
+                                   href="{{ path('undisable_quiz', {'quiz': quiz.id}) }}"
+                                   role="button" id="{{ quiz.id }}">Undisable this quiz!</a>
+                            {% endif %}
+                        </p>
+                    </div>
+                </ol>
+            {% else %}
+                <ol class="breadcrumb">
+                    <div class="jumbotron-fluid red">
+                        <h1 class="display-5">{{ quiz.title }}</h1>
+                        <p class="lead">{{ quiz.description }}</p>
+                        <hr class="my-4">
+                        <p>Press the button to edit the quiz or disable quiz .</p>
+                        <p class="lead">
+                            <a class="btn btn-primary btn-lg"
+                               href="{{ path('admin_edit_questions', {'quiz': quiz.id}) }}"
+                               role="button" id="{{ quiz.id }}">Edit!</a>
+                            {% if quiz.isActive == 1 %}
+                                <a class="btn btn-primary btn-lg"
+                                   href="{{ path('disable_quiz', {'quiz': quiz.id}) }}"
+                                   role="button" id="{{ quiz.id }}">Disable this quiz!</a>
+                            {% else %}
+                                <a class="btn btn-primary btn-lg"
+                                   href="{{ path('undisable_quiz', {'quiz': quiz.id}) }}"
+                                   role="button" id="{{ quiz.id }}">Undisable this quiz!</a>
+                            {% endif %}
+                        </p>
+                    </div>
+                </ol>
+            {% endif %}
+
+        {% endfor %}
+    {% else %}
+        <p> No quizzes to display</p>
+    {% endif %}
+{% endblock %}

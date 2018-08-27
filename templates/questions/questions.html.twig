@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+{% block title %}Quiz site{% endblock %}
+{% block body %}
+
+    <meta charset="UTF-8">
+    <title>'{{ quiz.title }}'</title>
+
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
+    <div id="quiz">
+        <div id="quiz-header">
+            <h1>{{ quiz.title }}</h1>
+            {% set count = 0%}
+            {% for question in quiz.question%}
+                {% set count=count+1 %}
+            {% endfor %} .
+            <p id="description" class="faded">The test consists of {{count}} questions. There is only one correct answer. You can continue to answer in any day.
+            The participant wins with the most correct answers. If the number of correct answers is the same with other participant, then the winner is who is faster.</p>
+        <div id="quiz-start-screen">
+            <p><a href="#" id="quiz-start-btn" class="quiz-button">Start</a></p>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <script src='{{ asset('js/sourseOfQuestionPlugin.js ') }}'></script>
+    <script>
+       var  currentQuestionFromServer;
+       var check = $.ajax({
+            url: '/questions/currentQuestion',
+            type: "POST",
+            dataType: "json",
+            data: {
+                "giveMeCurrentQuestion": "giveMeCurrentQuestion"
+            },
+            success: function (data) {
+                currentQuestionFromServer = data.output+1;
+            }
+            });
+
+            $.when(check).done(function() {
+
+            $('#quiz').quiz({
+
+            currentQuestionFromServer: currentQuestionFromServer,
+            a:'%score',
+            counterFormat: 'Question %current of %total',
+
+            questions: [
+
+                {% for question in quiz.question%}
+                {
+                    'q': "{{ question.title }}",
+                    'options': [
+                        {% for answer in question.answers %}
+                        '{{ answer.title }}',
+                        {% endfor %}
+                    ],
+                    {% set counter= -1 %}
+                    {% for answer in question.answers %}
+                    {% set counter=counter+1 %}
+                    {% if answer.isCorrect %}
+                    'correctIndex': {{ counter }},
+
+                    {% endif %}
+                    {% endfor %}
+
+                    'correctResponse': 'Good job, that was obvious.',
+                    'incorrectResponse': 'Nope!'
+                },
+                {% endfor %}
+            ]
+        });
+            });
+
+    </script>
+
+
+{% endblock %}

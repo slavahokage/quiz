@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+{% block title %}Quiz site{% endblock %}
+{% block body %}
+    <blockquote class="blockquote text-center">
+        <h1>Choose a entities for manage</h1>
+        <div class="dropdown open">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Entities
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">User</a>
+                <a class="dropdown-item" href="#">Quiz</a>
+                <a class="dropdown-item" href="#">Results</a>
+            </div>
+        </div>
+    </blockquote>
+
+    <div id=”entities-grid”>
+        <table id="articles" class="table table-striped">
+            <thead>
+            <tr>
+
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr>
+
+            </tr>
+
+
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+
+{% endblock %}

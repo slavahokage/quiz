@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+{% block title %}Quiz site{% endblock %}
+{% block body %}
+
+    {% if app.user == false %}
+        <div class="jumbotron">
+            <h1 class="display-3">Hello!</h1>
+            <p class="lead">To participate in quizzes you must to register</p>
+            <hr class="my-4">
+            <p>After registration you will open a lot of quizzes</p>
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="{{ path('user_registration') }}" role="button">Sign Up</a>
+            </p>
+        </div>
+    {% else %}
+        <blockquote class="blockquote text-center">
+            <h1>Сhoose your quiz</h1>
+        </blockquote>
+        <hr>
+        {% if quizzes %}
+            {% for quiz in quizzes %}
+
+                {% set flag = 0 %}
+                {% for r in result %}
+                    {% if r.user.id == user.id and r.quiz.id == quiz.id and r.isOver == 1 %}
+                        {% set flag = 1 %}
+                    {% endif %}
+                {% endfor %}
+
+                {% if loop.index is odd %}
+                    {% if quiz.isActive == 1 %}
+                        <ol class="breadcrumb" style="background-color: lightblue">
+                            <div class="jumbotron-fluid red">
+                                <h1 class="display-5">{{ quiz.title }}</h1>
+                                <p class="lead">{{ quiz.description }}</p>
+                                <hr class="my-4">
+                                <p>Press the button to start the quiz.</p>
+                                <p class="lead">
+                                    {% if flag == 0 %}
+                                        <a class="btn btn-primary btn-lg"
+                                           href="{{ path('questions_list', {'page': quiz.id}) }}"
+                                           role="button" id="{{ quiz.id }}">Start!</a>
+                                    {% else %}
+                                        <a class="btn btn-primary btn-lg"
+                                           href="{{ path('results', {'page': quiz.id}) }}"
+                                           role="button" id="{{ quiz.id }}">Show Result!</a>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </ol>
+                    {% endif %}
+                {% else %}
+                    {% if quiz.isActive == 1 %}
+                        <ol class="breadcrumb">
+                            <div class="jumbotron-fluid red">
+                                <h1 class="display-5">{{ quiz.title }}</h1>
+                                <p class="lead">{{ quiz.description }}</p>
+                                <hr class="my-4">
+                                <p>Press the button to start the quiz. You can continue in any day .</p>
+                                <p class="lead">
+                                    {% if flag == 0 %}
+                                        <a class="btn btn-primary btn-lg"
+                                           href="{{ path('questions_list', {'page': quiz.id}) }}"
+                                           role="button" id="{{ quiz.id }}">Start!</a>
+                                    {% else %}
+                                        <a class="btn btn-primary btn-lg"
+                                           href="{{ path('results', {'page': quiz.id}) }}"
+                                           role="button" id="{{ quiz.id }}">Show Result!</a>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </ol>
+                    {% endif %}
+                {% endif %}
+
+            {% endfor %}
+        {% else %}
+            <p> No quizzes to display</p>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+        <script src='{{ asset('js/quizcookie.js') }}'></script>
+{% endblock %}

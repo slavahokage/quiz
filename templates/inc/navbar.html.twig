@@ -1,0 +1,25 @@
+<nav class="navbar navbar-expand-sm navbar-dark bg-primary mb-3">
+    <div class="container">
+        <a href="/" class="navbar-brand">Quiz</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mobile-nav" aria-controls="navbarResponsive" aria-expanded="true" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mobile-nav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a href="/admin" class="nav-link">Admin Page</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                {% if app.user %}
+                    <a  href="{{ path('logout') }}" class="btn btn-outline-primary my-2 my-sm-0 mr-2" type="submit">Log Out</a>
+                {% else %}
+                    <a  href="{{ path('login') }}" class="btn btn-outline-primary my-2 my-sm-0 mr-2" type="submit">Log In</a>
+                {% endif %}
+
+                <a  href="{{ path('user_registration') }}" class="btn btn-outline-primary my-2 my-sm-0" type="submit">Sign Up</a>
+            </form>
+        </div>
+    </div>
+</nav>

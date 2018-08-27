@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+{% block title %}Quiz site{% endblock %}
+{% block body %}
+<blockquote class="blockquote text-center">
+    <h1>Top-3 in {{ quiz.title }}</h1>
+</blockquote>
+<table id="articles" class="table table-striped">
+    <thead>
+    <tr>
+        <th>
+            Position
+        </th>
+        <th>
+            Name
+        </th>
+        <th>
+            Result
+        </th>
+        <th>
+            Time
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% set count = 1 %}
+    {% for t in topTree %}
+        <tr>
+            <td>
+                {{ count }}
+            </td>
+            <td>
+                {{ t.username }}
+            </td>
+            <td>
+                {{ t.score }}
+            </td>
+            <td>
+                {{ format_time(t.time) }}
+            </td>
+        </tr>
+        {% set count=count+1 %}
+    {% endfor %}
+    </tbody>
+</table>
+<hr>
+<blockquote class="blockquote text-center">
+    <h1>Your result</h1>
+</blockquote>
+<hr>
+
+{% set count = 1 %}
+    {% set position = 0 %}
+    {% set score = 0 %}
+    {% set time = 0 %}
+    {% for r in results %}
+        {% if  r.username == user.username %}
+            {% set position = count %}
+            {% set score = r.score %}
+            {% set time = r.time %}
+        {% endif %}
+        {% set count=count+1 %}
+    {% endfor %}
+
+<table id="articles" class="table table-striped table-primary">
+    <thead>
+    <tr>
+        <th>
+            Position
+        </th>
+        <th>
+            Name
+        </th>
+        <th>
+            Result
+        </th>
+        <th>
+            Time
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr>
+        <td>
+            {{ position }}
+        </td>
+        <td>
+            {{ user.username }}
+        </td>
+        <td>
+            {{ score }}
+        </td>
+        <td>
+            {{ format_time(time) }}
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+
+
+{% endblock %}

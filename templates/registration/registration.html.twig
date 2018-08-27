@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Sign in Panel - Bootsnipp.com</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/registrationcss.css') }}">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container" style="margin-top:40px">
+    <div class="row">
+        <div class="col-sm-6 col-md-4 col-md-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <strong> Sign up to continue</strong>
+                </div>
+                <div class="panel-body">
+                    {{ form_start(form) }}
+                    <form action="{{ path('login') }}" method="POST">
+                        <fieldset>
+                            <div class="row">
+                                <div class="center-block">
+                                    <img class="profile-img"
+                                         src="images/user_icon.png" alt="">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-10  col-md-offset-1 ">
+                                    <div class="form-group">
+                                        <div class="text-danger">
+                                            {{ form_errors(form) }}
+                                            {% if error is defined %}
+                                                <p class="text-danger">{{ error }}</p>
+                                            {% endif %}
+                                        </div>
+                                        <div class="input-group">
+												<span class="input-group-addon">
+													<i class="glyphicon glyphicon-user"></i>
+												</span>
+                                            {{ form_widget(form.username, {attr:{class: "form-control"}}) }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+												<span class="input-group-addon">
+													<i class="glyphicon glyphicon-envelope"></i>
+												</span>
+                                            {{ form_widget(form.email, {attr:{class: "form-control"}}) }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+												<span class="input-group-addon">
+													<i class="glyphicon glyphicon-lock"></i>
+												</span>
+                                            {{ form_widget(form.plainPassword.first, {attr:{class: "form-control"}}) }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+												<span class="input-group-addon">
+													<i class="glyphicon glyphicon-lock"></i>
+												</span>
+                                            {{ form_widget(form.plainPassword.second, {attr:{class: "form-control"}}) }}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <input type="submit" class="btn btn-lg btn-primary btn-block" value="Sign up">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        {{ form_rest(form) }}
+                    </form>
+                    {{ form_end(form) }}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
