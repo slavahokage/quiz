@@ -69,7 +69,7 @@ class QuizTable implements \Serializable
     /**
      * @return mixed
      */
-    public function getDateOfCreation()
+    public function getDateOfCreation(): \DateTime
     {
         return $this->dateOfCreation;
     }
@@ -85,7 +85,7 @@ class QuizTable implements \Serializable
     /**
      * @return mixed
      */
-    public function getisActive()
+    public function getisActive(): string
     {
         return $this->isActive;
     }
@@ -97,12 +97,6 @@ class QuizTable implements \Serializable
     {
         $this->isActive = $isActive;
     }
-
-
-
-
-
-
 
     public function getTitle(): ?string
     {
@@ -119,7 +113,7 @@ class QuizTable implements \Serializable
     /**
      * @return mixed
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }

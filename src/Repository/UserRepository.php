@@ -26,7 +26,6 @@ class UserRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('u');
         return $qb->select('u.username', 'r.score', 'r.time')
             ->innerJoin('u', 'r', 'WITH', 'u.id = r.user_id');
-        //return $this->findBy(array(), array('score' s=> 'DESC'));
     }
 
     public function getTopTreeResultsOfUsers($quiz)

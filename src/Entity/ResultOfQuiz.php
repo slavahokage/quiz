@@ -21,7 +21,7 @@ class ResultOfQuiz
     /**
      * @ORM\Column(type="integer")
      */
-    private $score = 0;
+    private $score;
 
     /**
      * @ORM\Column(type="integer")
@@ -31,7 +31,7 @@ class ResultOfQuiz
     /**
      * @ORM\Column(type="integer")
      */
-    private $currentQuestion = 0;
+    private $currentQuestion;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\QuizTable", inversedBy="resultOfQuizzes")
@@ -48,7 +48,7 @@ class ResultOfQuiz
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isOver = 0;
+    private $isOver;
 
     public function getId(): ?int
     {
@@ -118,7 +118,7 @@ class ResultOfQuiz
     /**
      * @return mixed
      */
-    public function getTime()
+    public function getTime(): int
     {
         return $this->time;
     }

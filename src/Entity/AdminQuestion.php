@@ -86,7 +86,6 @@ class AdminQuestion
     {
         if ($this->answers->contains($answer)) {
             $this->answers->removeElement($answer);
-            // set the owning side to null (unless already changed)
             if ($answer->getQuestion() === $this) {
                 $answer->setQuestion(null);
             }

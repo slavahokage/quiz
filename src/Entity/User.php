@@ -68,7 +68,7 @@ class User implements UserInterface, \Serializable
     }
 
 
-    public function getPlainPassword()
+    public function getPlainPassword(): string
     {
         return $this->plainPassword;
     }
@@ -76,7 +76,7 @@ class User implements UserInterface, \Serializable
     /**
      * @return mixed
      */
-    public function getisActive()
+    public function getisActive(): bool
     {
         return $this->isActive;
     }
@@ -88,7 +88,6 @@ class User implements UserInterface, \Serializable
     {
         $this->isActive = $isActive;
     }
-
 
 
     public function getId(): ?int
@@ -107,13 +106,13 @@ class User implements UserInterface, \Serializable
         return null;
     }
 
-    public function getRoles()
+    public function getRoles(): array
     {
         return $this->roles;
     }
 
 
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -125,7 +124,7 @@ class User implements UserInterface, \Serializable
     }
 
 
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -136,7 +135,7 @@ class User implements UserInterface, \Serializable
     }
 
 
-    public function getUsername()
+    public function getUsername(): string
     {
         return $this->username;
     }
@@ -161,7 +160,7 @@ class User implements UserInterface, \Serializable
 
     public function unserialize($serialized)
     {
-        list($this->id, $this->username, $this->email, $this->password, $this->roles)= unserialize($serialized,['allowed_classes' => false]);
+        list($this->id, $this->username, $this->email, $this->password, $this->roles) = unserialize($serialized, ['allowed_classes' => false]);
     }
 
     /**
@@ -186,7 +185,6 @@ class User implements UserInterface, \Serializable
     {
         if ($this->resultOfQuizzes->contains($resultOfQuiz)) {
             $this->resultOfQuizzes->removeElement($resultOfQuiz);
-            // set the owning side to null (unless already changed)
             if ($resultOfQuiz->getUser() === $this) {
                 $resultOfQuiz->setUser(null);
             }
