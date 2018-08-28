@@ -49,7 +49,7 @@ class AdminQuizTable implements \Serializable
     /**
      * @return mixed
      */
-    public function getCurrentQuestion(): int
+    public function getCurrentQuestion(): ?int
     {
         return $this->currentQuestion;
     }
@@ -84,7 +84,7 @@ class AdminQuizTable implements \Serializable
     /**
      * @return mixed
      */
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }

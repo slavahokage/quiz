@@ -85,7 +85,7 @@ class QuizTable implements \Serializable
     /**
      * @return mixed
      */
-    public function getisActive(): string
+    public function getisActive(): bool
     {
         return $this->isActive;
     }
@@ -113,7 +113,7 @@ class QuizTable implements \Serializable
     /**
      * @return mixed
      */
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
