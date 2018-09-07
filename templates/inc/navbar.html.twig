@@ -1,3 +1,12 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('css/userimage.css') }}">
+    {% endblock %}
+
+</head>
+<body>
 <nav class="navbar navbar-expand-sm navbar-dark bg-primary mb-3">
     <div class="container">
         <a href="/" class="navbar-brand">Quiz</a>
@@ -5,21 +14,48 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
+
         <div class="collapse navbar-collapse" id="mobile-nav">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a href="/admin" class="nav-link">Admin Page</a>
-                </li>
+                {% if user != 'anon.'%}
+                {% for u in user.roles %}
+                    {% if u == 'ROLE_ADMIN'%}
+                        <li class="nav-item">
+                            <a href="/admin" class="nav-link">Admin page</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                {% endif %}
             </ul>
+
             <form class="form-inline my-2 my-lg-0">
                 {% if app.user %}
-                    <a  href="{{ path('logout') }}" class="btn btn-outline-primary my-2 my-sm-0 mr-2" type="submit">Log Out</a>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle inline"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="caret"> {{ user.username }}</span>
+                            <div class="edititem inline">
+                                <img src="https://htmlacademy.ru/assets/courses/40/img-small.jpg">
+                            </div>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start"
+                             style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 35px, 0px);">
+                            <a class="dropdown-item" href="">My results</a>
+                            <a class="dropdown-item" href="#">Edit account</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ path('logout') }}">Log out</a>
+                            <a class="dropdown-item" href="{{ path('user_registration') }}">Sign in</a>
+                        </div>
+                    </div>
                 {% else %}
-                    <a  href="{{ path('login') }}" class="btn btn-outline-primary my-2 my-sm-0 mr-2" type="submit">Log In</a>
+                    <a href="{{ path('login') }}" class="btn btn-outline-primary my-2 my-sm-0 mr-2" type="submit">Log
+                        In</a>
+                    <a href="{{ path('user_registration') }}" class="btn btn-outline-primary my-2 my-sm-0 mr-2"
+                       type="submit">Sign Up</a>
                 {% endif %}
-
-                <a  href="{{ path('user_registration') }}" class="btn btn-outline-primary my-2 my-sm-0" type="submit">Sign Up</a>
             </form>
         </div>
     </div>
 </nav>
+</body>
+</html>

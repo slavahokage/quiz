@@ -17,7 +17,8 @@ class AjaxGridController extends AbstractController
      */
     public function index():Response
     {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        return $this->render('ajaxGrid/ajaxgrid.html.twig');
+        return $this->render('ajaxGrid/ajaxgrid.html.twig', array('user' => $user));
     }
 }

@@ -1,0 +1,17 @@
+.edititem {
+    width: 33px;
+    height: 33px;
+    height: auto;
+    margin: 3px;
+    padding: 3px;
+}
+
+.edititem img {
+    max-width: 33px;
+    height: 33px;
+    border-radius: 100%;
+}
+
+.inline{
+    display: inline-block;
+}
