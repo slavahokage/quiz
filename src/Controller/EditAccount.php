@@ -20,8 +20,9 @@ class EditAccount extends AbstractController
      * @Route("/edit", name="edit")
      *
      */
-    public function index(Request $request) : Response
+    public function index() : Response
     {
-
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        return $this->render('user/edit.html.twig', array('user' => $user));
     }
 }
