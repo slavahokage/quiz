@@ -42,6 +42,6 @@ class TimeExtension extends \Twig_Extension
 
     private function countOfNumbers($number) : float
     {
-        return ceil(log10($number));
+        return strlen(strval($number));
     }
 }

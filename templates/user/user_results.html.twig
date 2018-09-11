@@ -1,5 +1,61 @@
 {% extends 'base.html.twig' %}
 {% block title %}Quiz site{% endblock %}
 {% block body %}
-    <h1>123</h1>
+    <blockquote class="blockquote text-center">
+        <h1>{{ user.username }} your results!</h1>
+    </blockquote>
+    <table id="articles" class="table table-striped">
+        <thead>
+        <tr>
+            <th>
+                Name Of Quiz
+            </th>
+            <th>
+                Score
+            </th>
+            <th>
+                Time
+            </th>
+            <th>
+                Position
+            </th>
+        </tr>
+        </thead>
+        {% for r in resultsOfUser %}
+            {% if r.isOver == 1 %}
+            <tbody>
+            <tr>
+                <td>
+                    {{ r.quiz.title }}
+                </td>
+                <td>
+                    {{ r.score }}
+                </td>
+                <td>
+                    {{ r.time }}
+                </td>
+
+                {% set stop = 0 %}
+                {% set count = 1 %}
+                {% for result in arrayOfResultsAll %}
+                    {% if stop != 1 %}
+                        {% for res in result %}
+                            {% if stop != 1 %}
+                                {% if res[1] == r.quiz.id %}
+                                    {% if res.username == user.username %}
+                                        {% set position = count %}
+                                        <td> {{ position }} </td>
+                                        {% set stop = 1 %}
+                                    {% endif %}
+                                    {% set count=count+1 %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            </tbody>
+            {% endif %}
+        {% endfor %}
+    </table>
 {% endblock %}

@@ -4,7 +4,6 @@
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('css/userimage.css') }}">
     {% endblock %}
-
 </head>
 <body>
 <nav class="navbar navbar-expand-sm navbar-dark bg-primary mb-3">
@@ -40,8 +39,8 @@
                         </button>
                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start"
                              style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 35px, 0px);">
-                            <a class="dropdown-item" href="">My results</a>
-                            <a class="dropdown-item" href="#">Edit account</a>
+                            <a class="dropdown-item" href="{{ path('all_results') }}">My results</a>
+                            <a class="dropdown-item" href="{{ path('edit') }}">Edit account</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{{ path('logout') }}">Log out</a>
                             <a class="dropdown-item" href="{{ path('user_registration') }}">Sign in</a>

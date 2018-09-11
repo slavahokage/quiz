@@ -31,7 +31,7 @@ class UserRepository extends ServiceEntityRepository
     public function getTopTreeResultsOfUsers($quiz)
     {
         $qb = $this->createQueryBuilder('u');
-        return $qb->select('u.username', 'r.score', 'r.time')
+            return $qb->select ('u.username', 'r.score', 'r.time')
             ->innerJoin('u.resultOfQuizzes', 'r')
             ->addOrderBy('r.score', 'DESC')
             ->addOrderBy('r.time', 'ASC')
@@ -45,7 +45,7 @@ class UserRepository extends ServiceEntityRepository
     public function getAllResult($quiz)
     {
         $qb = $this->createQueryBuilder('u');
-        return $qb->select('u.username', 'r.score', 'r.time')
+        return $qb->select('u.username', 'r.score', 'r.time', 'IDENTITY(r.quiz)')
             ->innerJoin('u.resultOfQuizzes', 'r')
             ->addOrderBy('r.score', 'DESC')
             ->addOrderBy('r.time', 'ASC')

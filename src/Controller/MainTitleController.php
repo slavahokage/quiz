@@ -22,32 +22,6 @@ class MainTitleController extends AbstractController
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         try {
-
-            if ($user->getIsActive() == 0) {
-                return $this->render('user/ban.html.twig');
-            }
-        } catch (\Error $e) {
-            $quizzes = $this->getDoctrine()->getRepository(QuizTable::class)->findAll();
-            $result = $this->getDoctrine()->getRepository(ResultOfQuiz::class)->findAll();
-            return $this->render('maintitle/maintitle.html.twig', array('quizzes' => $quizzes, 'user' => $user, 'result' => $result));
-
-        }
-        $quizzes = $this->getDoctrine()->getRepository(QuizTable::class)->findAll();
-        $result = $this->getDoctrine()->getRepository(ResultOfQuiz::class)->findAll();
-        return $this->render('maintitle/maintitle.html.twig', array('quizzes' => $quizzes, 'user' => $user, 'result' => $result));
-    }
-
-    /**
-     * @Route("/test", name="test")
-     *
-     */
-    public function index2() : Response
-    {
-
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-
-        try {
-
             if ($user->getIsActive() == 0) {
                 return $this->render('user/ban.html.twig');
             }

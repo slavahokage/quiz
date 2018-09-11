@@ -55,7 +55,7 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('quiz_list', array('user' => $user));
         }
 
-        $quiz->setIsActive(0);
+        $quiz->setIsActive(false);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->flush();
         $quizzes = $this->getDoctrine()->getRepository(QuizTable::class)->findAll();
@@ -74,7 +74,7 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('quiz_list', array('user' => $user));
         }
 
-        $quiz->setIsActive(1);
+        $quiz->setIsActive(true);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->flush();
         $quizzes = $this->getDoctrine()->getRepository(QuizTable::class)->findAll();
@@ -105,7 +105,6 @@ class AdminController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
         }
-
         return new Response();
 
     }

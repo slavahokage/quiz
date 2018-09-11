@@ -47,7 +47,7 @@ class QuestionsController extends AbstractController
         }
 
         $quiz = $this->getDoctrine()->getRepository(QuizTable::class)->find($page);
-        return $this->render('questions/questions.html.twig', array('quiz' => $quiz));
+        return $this->render('questions/questions.html.twig', array('quiz' => $quiz, 'user'=>$user));
     }
 
     /**
