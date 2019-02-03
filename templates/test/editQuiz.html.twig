@@ -1,0 +1,352 @@
+{% extends 'base.html.twig' %}
+{% block title %}Quiz site{% endblock %}
+{% block body %}
+    <style>
+        .custom-control-label {
+            margin-bottom: 12px;
+        }
+    </style>
+    <blockquote class="blockquote text-center">
+        <h1>Edit questions</h1>
+    </blockquote>
+    {% if success is defined %}
+        <blockquote id="success" class="blockquote text-center">
+            <p class="text-success">{{ success }}</p>
+        </blockquote>
+    {% endif %}
+    <div class="input-bar">
+        <div class="input-bar-item width100">
+            <form class="form-1" name="form1" method="post" action="{{ path('get_edit_quiz', {'quiz': quiz.id}) }}">
+                <div id="items">
+                    <strong id="strongOfQuiz"> Title for new Quiz: </strong>
+                    <div class="input-group my-2" id="titleOfQuiz">
+                        <input name="title" value="{{ quiz.title }}" type="text" id="inputOfQuiz" required="required"
+                               class="form-control width100 mr-2">
+                    </div>
+                    <strong id="descriptionOfQuiz"> Description for new Quiz: </strong>
+                    <div class="input-group my-2" id="titleOfQuiz">
+                        <input name="description" value="{{ quiz.description }}" type="text" id="inputOfQuiz" required="required"
+                               class="form-control width100 mr-2">
+                    </div>
+                {% set count = 1 %}
+                {% for question in quiz.question %}
+                <blockquote class="blockquote text-center" id="{{ count }}">
+                    <strong id="text{{ count }}">Title for new question</strong>
+                    <div class="input-group my-2" id="group{{count}}">
+                        <input class="form-control width100 mr-2" value="{{ question.title }}" type="text" id="items{{count}}" name="question{{count}}" required="required">
+                        <a class="btn btn-secondary delete" id="delete{{ count }}" href="#" role="button" onclick="deleteQuestion(this)">Delete a question</a>
+                    </div>
+                    {% set answerCount = 0 %}
+                {% for answer in question.answers %}
+                        <strong id="strongAnswerTitle{{ count }}_{{ answerCount }}">Title for new answer</strong>
+                       <div class="input-group my-2" id="miniGroup{{ count }}_{{ answerCount }}">
+                           <input class="form-control width100 mr-2" value="{{ answer.title }}"  type="text" id="itemAnswer{{count}}_{{ answerCount }}" name="answer{{ count }}_{{ answerCount }}" required="required">
+                           <div class="custom-control custom-checkbox">
+                               {% if answer.isCorrect == 1 %}
+                                   <input class="custom-control-input" type="checkbox"  id="checkBox{{ count }}_{{ answerCount }}" name="checkbox{{ count }}_{{ answerCount }}" checked>
+                               {% else %}
+                                   <input class="custom-control-input" type="checkbox"  id="checkBox{{ count }}_{{ answerCount }}" name="checkbox{{ count }}_{{ answerCount }}">
+                               {% endif %}
+
+                               <label class="custom-control-label"  for="checkBox{{ count }}_{{ answerCount }}"></label>
+                               <a class="btn btn-secondary" id="deleteMiniGroup{{ count }}_{{ answerCount }}" href="#" role="button" onclick="deleteAnswer(this)">Delete a answer</a>
+                           </div>
+                       </div>
+
+                    {% set answerCount = answerCount+1 %}
+
+                {% endfor %}
+                    <a class="btn btn-secondary" id="answer{{ count }}" href="#" role="button" onclick="addAnswers(this)">Add answers</a>
+                </blockquote>
+                    {% set count=count+1 %}
+                {% endfor %}
+                </div>
+                <a id="add" class="btn btn-secondary question" href="#" role="button" onClick="AddItem()">Add a
+                    question</a>
+                <blockquote id = "blockquotesubmit" class="blockquote text-center">
+                    <button id = "submitbtn" type="submit" class="btn btn-primary mt-3">Submit</button>
+                </blockquote>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+
+        var items;
+        var itemsAnswer;
+
+        var check = $.ajax({
+            url: 'http://quiz/admin/getInformationAboutQuiz/{{ quiz.id }}',
+            type: "POST",
+            dataType: "json",
+            data: {
+                "test":"test"
+            },
+            success: function (data) {
+                items = data.length+1;
+                itemsAnswer = data.answers;
+            }
+        });
+            function deleteQuestion(t) {
+                let idOfGroup = t.id.replace('delete', '');
+                //itemsAnswer.splice(idOfGroup-1,1);
+                itemsAnswer[idOfGroup - 1] = -1;
+                document.getElementById(idOfGroup).remove();
+                document.getElementById('text' + idOfGroup).remove();
+                document.getElementById('delete' + idOfGroup).remove();
+                document.getElementById('items' + idOfGroup).remove();
+                document.getElementById('answer' + idOfGroup).remove();
+                console.log(itemsAnswer);
+                ite
+            }
+
+            function deleteAnswer(t) {
+                console.log(t.id);
+                document.getElementById('miniGroup' + t.id.replace('deleteMiniGroup', '')).remove();
+                document.getElementById('strongAnswerTitle' + t.id.replace('deleteMiniGroup', '')).remove();
+                let id = t.id.replace('deleteMiniGroup', '');
+                let idForDecrease = [];
+                let i = 0;
+                while (id[i] !== '_') {
+                    idForDecrease[i] = id[i];
+                    i++;
+                }
+
+                itemsAnswer[idForDecrease - 1]--;
+                console.log(itemsAnswer);
+            }
+
+            function addAnswers(t) {
+                let idOfGroup = t.id.replace('answer', '');
+                let input = document.createElement('input');
+                let strong = document.createElement('strong');
+                let div = document.createElement('div');
+                let deleteBtn = document.createElement('a');
+                let checkBox = document.createElement('div');
+                let inputCheckBox = document.createElement('input');
+                let labelCheckBox = document.createElement('label');
+
+                checkBox.className = "custom-control custom-checkbox";
+
+                inputCheckBox.className = 'custom-control-input';
+                inputCheckBox.setAttribute("type", "checkbox");
+                inputCheckBox.setAttribute("id", "checkBox" + idOfGroup + "_" + itemsAnswer[idOfGroup - 1]);
+                inputCheckBox.setAttribute("name", "checkbox" + idOfGroup + "_" + itemsAnswer[idOfGroup - 1]);
+
+                labelCheckBox.className = "custom-control-label";
+                labelCheckBox.setAttribute("for", "checkBox" + idOfGroup + "_" + itemsAnswer[idOfGroup - 1]);
+
+
+                deleteBtn.innerHTML = 'Delete a answer';
+                deleteBtn.className = 'btn btn-secondary';
+                deleteBtn.className = 'btn btn-secondary';
+                deleteBtn.setAttribute("id", "delete" + "MiniGroup" + idOfGroup + "_" + itemsAnswer[idOfGroup - 1]);
+                deleteBtn.setAttribute("href", "#");
+                deleteBtn.setAttribute("role", "button");
+                deleteBtn.setAttribute("onClick", "deleteAnswer(this)");
+
+                div.className = 'input-group my-2';
+                div.setAttribute("id", "miniGroup" + idOfGroup + "_" + itemsAnswer[idOfGroup - 1]);
+
+                strong.innerHTML = "Title for new answer";
+                strong.setAttribute("id", "strongAnswerTitle" + idOfGroup + "_" + itemsAnswer[idOfGroup - 1]);
+
+                input.className = 'form-control width100 mr-2 addAnswer';
+                input.setAttribute("type", "text");
+                input.setAttribute("name", "answer" + idOfGroup + "_" + itemsAnswer[idOfGroup - 1]);
+                input.setAttribute("id", "itemAnswer" + idOfGroup + "_" + itemsAnswer[idOfGroup - 1]);
+                input.setAttribute("required", "required");
+
+                checkBox.appendChild(inputCheckBox);
+                checkBox.appendChild(labelCheckBox);
+
+                div.appendChild(input);
+                div.appendChild(checkBox);
+                div.appendChild(deleteBtn);
+
+                document.getElementById(idOfGroup).insertBefore(div, document.getElementById('answer' + idOfGroup));
+
+                document.getElementById(idOfGroup).insertBefore(strong, document.getElementById("miniGroup" + idOfGroup + "_" + itemsAnswer[idOfGroup - 1]));
+
+                itemsAnswer[idOfGroup - 1]++;
+            }
+
+            function AddItem() {
+                itemsAnswer.push(0);
+                console.log(document.getElementById('items'));
+                let newStrong = document.createElement('strong');
+                newStrong.innerHTML = 'Title for new question';
+                newStrong.setAttribute("id", "text" + items);
+                document.getElementById('items').appendChild(newStrong);
+
+                let newDiv = document.createElement('div');
+                newDiv.className = 'input-group my-2';
+                newDiv.setAttribute("id", "group" + items);
+
+                let input = document.createElement('input');
+                input.className = 'form-control width100 mr-2';
+                input.setAttribute("type", "text");
+                input.setAttribute("id", "items" + items);
+                input.setAttribute("name", "question" + items);
+                input.setAttribute("required", "required");
+
+                let a = document.createElement('a');
+                a.innerHTML = 'Delete a question';
+                a.className = 'btn btn-secondary delete';
+                a.setAttribute("id", "delete" + items);
+                a.setAttribute("href", "#");
+                a.setAttribute("role", "button");
+                a.setAttribute("onClick", "deleteQuestion(this)");
+
+                newDiv.appendChild(input);
+                newDiv.appendChild(a);
+
+                document.getElementById('items').appendChild(newDiv);
+
+                let i = document.getElementById("items");
+
+                let blockquote = document.createElement('blockquote');
+                blockquote.className = "blockquote text-center ";
+                blockquote.setAttribute("id", items);
+
+
+                let answerButton = document.createElement('a');
+                answerButton.innerHTML = 'Add answers';
+                answerButton.className = 'btn btn-secondary answers';
+                answerButton.setAttribute("id", "answer" + items);
+                answerButton.setAttribute("href", "#");
+                answerButton.setAttribute("role", "button");
+                answerButton.setAttribute("onClick", "addAnswers(this)");
+
+                blockquote.appendChild(answerButton);
+
+                i.appendChild(blockquote);
+
+                items++;
+                document.getElementById("add").setAttribute('href', "#items" + (items - 1));
+                console.log(itemsAnswer);
+            }
+
+            const myForm = document.querySelector("form[name='form1'");
+            myForm.addEventListener("submit", onSubmit);
+
+            function onSubmit(e) {
+                if (checkQuestions() === false || checkAnswers() === false || checkCountOfCorrectAnswers() === false) {
+                    if (checkQuestions() === false) {
+                        console.log("checkquestions");
+                    }
+                    if (checkAnswers() === false) {
+                        console.log("checkanswers");
+                    }
+                    if (checkCountOfCorrectAnswers() === false) {
+                        console.log("count");
+                    }
+                    if (document.getElementById("errorp")) {
+                        document.getElementById("errorp").style.display = "block";
+                        hideAlert(document.getElementById("errorp"));
+                    } else {
+                        let div = document.createElement('div');
+                        div.setAttribute("id", "error");
+                        let p = document.createElement('p');
+                        p.innerHTML = 'Quiz must have at least one question. Question must have at least one answer and allowed only one correct answer';
+                        p.className = 'text-danger';
+                        p.setAttribute("id", "errorp");
+                        div.appendChild(p);
+                        let submitblock = document.getElementById('blockquotesubmit');
+                        let submitbtn = document.getElementById('submitbtn');
+                        submitblock.insertBefore(p, submitbtn);
+                        hideAlert(p);
+                    }
+
+                    e.preventDefault();
+                }
+            }
+
+            function checkQuestions() {
+                console.log(items);
+                for (let i = 0; i < items; i++) {
+                    if (document.getElementById('items' + (i + 1))) {
+                        return true;
+                    }
+                }
+                return false
+            }
+
+            function checkAnswers() {
+                for (let i = 0; i < itemsAnswer.length - 1; i++) {
+                    if (itemsAnswer[i] === 0) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            function checkCountOfCorrectAnswers() {
+                console.log("i am here");
+                let countOfCurrentAnswers = [];
+                let arrayOfQuestions = [];
+                for (let i = 0; i < itemsAnswer.length; i++) {
+                    countOfCurrentAnswers.push(0);
+                }
+
+                console.log(countOfCurrentAnswers);
+                console.log('items ' + items);
+                console.log(itemsAnswer);
+                for (let i = 0; i < items; i++) {
+                    for (let j = 0; j < itemsAnswer[i] - 1; j++) {
+                        console.log(document.getElementById('itemAnswer' + (i + 1) + '_' + (j + 1)));
+                    }
+                }
+
+                for (let i = 0; i <= items; i++) {
+                    for (let j = 0; j < itemsAnswer[i]; j++) {
+                        console.log('itemAnswer' + (i + 1) + '_' + (j + 1));
+                        if (document.getElementById('itemAnswer' + (i + 1) + '_' + (j + 1))) {
+                            arrayOfQuestions.push(document.getElementById('itemAnswer' + (i + 1) + '_' + (j + 1)));
+                        }
+                    }
+                }
+
+                console.log(arrayOfQuestions);
+
+                for (let i = 0; i < itemsAnswer.length; i++) {
+                    if (document.getElementById('items' + (i + 1))) {
+                        for (let j = 0; j < itemsAnswer[i] - 1; j++) {
+                            console.log('checkBox' + (i + 1) + '_' + (j + 1));
+                            if (document.getElementById('checkBox' + (i + 1) + '_' + (j + 1)).checked) {
+                                countOfCurrentAnswers[i]++;
+                            }
+                        }
+                    }
+                }
+
+                console.log(countOfCurrentAnswers);
+
+
+                for (let i = 0; i < countOfCurrentAnswers.length; i++) {
+                    if (countOfCurrentAnswers[i] > 1) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            function hideAlert(elem) {
+                setTimeout(function () {
+                    elem.style.display = "none";
+                }, 6000);
+            }
+
+        function hideSuccessBlock() {
+            if (document.getElementById('success')){
+                document.getElementById('success').style.display = "none";
+            }
+        }
+
+        setTimeout(hideSuccessBlock, 5000)
+    </script>
+{% endblock %}

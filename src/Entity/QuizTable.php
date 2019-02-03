@@ -135,6 +135,7 @@ class QuizTable implements \Serializable
         return $this->Question;
     }
 
+
     public function addQuestion(Question $question): self
     {
         if (!$this->Question->contains($question)) {
@@ -149,6 +150,13 @@ class QuizTable implements \Serializable
         if ($this->Question->contains($question)) {
             $this->Question->removeElement($question);
         }
+
+        return $this;
+    }
+
+    public function clearQuestion(): self
+    {
+        $this->Question->clear();
 
         return $this;
     }

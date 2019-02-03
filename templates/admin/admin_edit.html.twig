@@ -16,7 +16,7 @@
                         <p>Press the button to edit the quiz or disable quiz.</p>
                         <p class="lead">
                             <a class="btn btn-primary btn-lg"
-                               href="{{ path('admin_edit_questions', {'quiz': quiz.id}) }}"
+                               href="{{ path('edit_quiz', {'quiz': quiz.id}) }}"
                                role="button" id="{{ quiz.id }}">Edit!</a>
                             {% if quiz.isActive == 1 %}
                                 <a class="btn btn-primary btn-lg"
@@ -39,7 +39,7 @@
                         <p>Press the button to edit the quiz or disable quiz .</p>
                         <p class="lead">
                             <a class="btn btn-primary btn-lg"
-                               href="{{ path('admin_edit_questions', {'quiz': quiz.id}) }}"
+                               href="{{ path('edit_quiz', {'quiz': quiz.id}) }}"
                                role="button" id="{{ quiz.id }}">Edit!</a>
                             {% if quiz.isActive == 1 %}
                                 <a class="btn btn-primary btn-lg"

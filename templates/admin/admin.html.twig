@@ -6,12 +6,11 @@
         <p class="lead">Here you can create or edit quizzes</p>
         <hr class="my-4">
         <p class="lead">
-            <a class="btn btn-primary btn-lg mx-2 my-2" href="{{ path('create_questions') }}" role="button">Create new quiz</a>
+            <a class="btn btn-primary btn-lg mx-2 my-2" href="{{ path('create_quiz') }}" role="button">Create new quiz</a>
             <a class="btn btn-primary btn-lg mx-2 my-2" href="{{ path('admin_edit') }}" role="button">Edit quiz</a>
             <a class="btn btn-primary btn-lg mx-2 my-2" href="{{ path('user_list') }}" role="button">Disable users</a>
             <a class="btn btn-primary btn-lg mx-2 my-2" href="{{ path('ajax_grid') }}" role="button">Ajax grid</a>
         </p>
-
 {% endblock %}
 
 {% block javascripts %}
