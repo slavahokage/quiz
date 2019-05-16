@@ -320,7 +320,7 @@
                     "(?:^|; )" + "quiz".replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
                 ));
 
-                document.location.replace("http://quiz/questions/"+decodeURIComponent(quiz[1])+"/showResults");
+                document.location.replace(window.location.href + "/showResults");
             },
             updateCounter: function () {
                 var countStr = base.options.counterFormat.replace('%current', currentQuestion).replace('%total', numQuestions);
