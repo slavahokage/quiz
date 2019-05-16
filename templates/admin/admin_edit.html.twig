@@ -5,6 +5,11 @@
         <h1>Edit quiz</h1>
     </blockquote>
     <hr>
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
     {% if quizzes %}
         {% for quiz in quizzes %}
             {% if loop.index is odd %}
@@ -27,6 +32,9 @@
                                    href="{{ path('undisable_quiz', {'quiz': quiz.id}) }}"
                                    role="button" id="{{ quiz.id }}">Undisable this quiz!</a>
                             {% endif %}
+                            <a class="btn btn-primary btn-lg"
+                               href="{{ path('delete_quiz', {'quiz': quiz.id}) }}"
+                               role="button" id="{{ quiz.id }}">Delete!</a>
                         </p>
                     </div>
                 </ol>
@@ -50,6 +58,9 @@
                                    href="{{ path('undisable_quiz', {'quiz': quiz.id}) }}"
                                    role="button" id="{{ quiz.id }}">Undisable this quiz!</a>
                             {% endif %}
+                            <a class="btn btn-primary btn-lg"
+                               href="{{ path('delete_quiz', {'quiz': quiz.id}) }}"
+                               role="button" id="{{ quiz.id }}">Delete!</a>
                         </p>
                     </div>
                 </ol>
@@ -59,4 +70,13 @@
     {% else %}
         <p> No quizzes to display</p>
     {% endif %}
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(function () {
+            setTimeout(function() {
+                $('.alert-success').slideUp();
+            }, 2000);
+        });
+    </script>
 {% endblock %}

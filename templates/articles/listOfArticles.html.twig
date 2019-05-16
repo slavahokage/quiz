@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+{% block title %}Quiz site{% endblock %}
+{% block body %}
+
+    {% if app.user == false %}
+        <div class="jumbotron">
+            <h1 class="display-3">Hello!</h1>
+            <p class="lead">To look on articles you must to register</p>
+            <hr class="my-4">
+            <p>After registration you will open a lot of quizzes and articles</p>
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="{{ path('user_registration') }}" role="button">Sign Up</a>
+            </p>
+        </div>
+    {% else %}
+        <blockquote class="blockquote text-center">
+            <h1>Article page</h1>
+        </blockquote>
+        <hr>
+        {% if articles|length > 0 %}
+            {% for article in articles %}
+                <ol class="breadcrumb" style="background-color: lightblue">
+                    <div class="jumbotron-fluid red">
+                        <h1 class="display-5">{{article.title}}</h1>
+                        <p class="lead">file: {{article.realName}}</p>
+                        <hr class="my-4">
+                        <p>Press the button to download the article.</p>
+                        <p class="lead">
+                            <a class="btn btn-primary btn-lg"
+                               href="{{ path('download_article', {filename: article.source}) }}"
+                               role="button" id="{{ article.id }}">Download!</a>
+                            {% if is_granted('ROLE_ADMIN') %}
+                            <a class="btn btn-primary btn-lg"
+                               href="delete/{{ article.source }}"
+                               role="button" id="delete">Delete!</a>
+                            {% endif %}
+                        </p>
+                    </div>
+                </ol>
+            {% endfor %}
+        {% else %}
+            <p> No articles to display</p>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    <script src='{{ asset('js/quizcookie.js') }}'></script>
+{% endblock %}

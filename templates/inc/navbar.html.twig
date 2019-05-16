@@ -3,6 +3,13 @@
     <meta charset="UTF-8">
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('css/userimage.css') }}">
+        <style>
+            @media (max-width: 575px) {
+                .security{
+                    color: orange;
+                }
+            }
+        </style>
     {% endblock %}
 </head>
 <body>
@@ -13,45 +20,54 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-
         <div class="collapse navbar-collapse" id="mobile-nav">
             <ul class="navbar-nav mr-auto">
-                {% if user != 'anon.'%}
-                {% for u in user.roles %}
-                    {% if u == 'ROLE_ADMIN'%}
-                        <li class="nav-item">
-                            <a href="/admin" class="nav-link">Admin page</a>
-                        </li>
-                    {% endif %}
-                {% endfor %}
+
+                {% if app.user %}
+                    {% if app.user.isActive == 1 %}
+                    <li class="nav-item">
+                        <a href="{{ path('article_list') }}" class="nav-link">Articles page</a>
+                    </li>
+                {% endif %}
+
+                {% if app.user != 'anon.' and app.user.isActive == 1 %}
+                    {% for u in app.user.roles %}
+                        {% if u == 'ROLE_ADMIN' %}
+                            <li class="nav-item">
+                                <a href="{{ path('admin_page') }}" class="nav-link">Admin page</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
                 {% endif %}
             </ul>
 
             <form class="form-inline my-2 my-lg-0">
                 {% if app.user %}
-                    <div class="btn-group" role="group">
-                        <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle inline"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="caret"> {{ user.username }}</span>
-                            <div class="edititem inline">
-                                <img src="https://htmlacademy.ru/assets/courses/40/img-small.jpg">
+                        <div class="btn-group" role="group">
+                            <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle inline"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"> {{ app.user.username }}</span>
+                                <div class="edititem inline">
+                                    <img src="https://static.thenounproject.com/png/17241-200.png">
+                                </div>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start"
+                                 style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 35px, 0px);">
+                                <a class="dropdown-item" href="{{ path('all_results') }}">My results</a>
+                                <a class="dropdown-item" href="{{ path('edit') }}">Edit account</a>
+                                <!-- <a class="dropdown-item" href="{ path('create_quiz') }}">Fuck Nested Forms</a>
+                                 <a class="dropdown-item" href="{ path('edit_quiz') }}">Edit quiz</a> -->
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ path('logout') }}">Log out</a>
+                                <a class="dropdown-item" href="{{ path('user_registration') }}">Sign in</a>
                             </div>
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start"
-                             style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 35px, 0px);">
-                            <a class="dropdown-item" href="{{ path('all_results') }}">My results</a>
-                            <a class="dropdown-item" href="{{ path('edit') }}">Edit account</a>
-                           <!-- <a class="dropdown-item" href="{ path('create_quiz') }}">Fuck Nested Forms</a>
-                            <a class="dropdown-item" href="{ path('edit_quiz') }}">Edit quiz</a> -->
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{{ path('logout') }}">Log out</a>
-                            <a class="dropdown-item" href="{{ path('user_registration') }}">Sign in</a>
                         </div>
-                    </div>
                 {% else %}
-                    <a href="{{ path('login') }}" class="btn btn-outline-primary my-2 my-sm-0 mr-2" type="submit">Log
+                    <a href="{{ path('login') }}" class="btn btn-outline-primary my-2 my-sm-0 mr-2 security"
+                       type="submit">Log
                         In</a>
-                    <a href="{{ path('user_registration') }}" class="btn btn-outline-primary my-2 my-sm-0 mr-2"
+                    <a href="{{ path('user_registration') }}" class="btn btn-outline-primary my-2 my-sm-0 mr-2 security"
                        type="submit">Sign Up</a>
                 {% endif %}
             </form>

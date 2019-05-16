@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+{% block title %}Quiz site{% endblock %}
+{% block body %}
+    <style>
+        .Answer {
+            margin-left: 20%;
+            margin-right: 2%;
+        }
+    </style>
+    <blockquote class="blockquote text-center">
+        <h1>List of questions with answers</h1>
+    </blockquote>
+
+    {% set counterOfQuestions = 1 %}
+    {% set counterOfAnswers = 1 %}
+    <table class="table table-hover">
+        <tbody>
+        {% for q in quiz.Question %}
+            <tr>
+                <td>
+                    <h5>Question {{ counterOfQuestions }}: {{ q.title }}</h5>
+                </td>
+            </tr>
+
+                {% for a in q.answers %}
+                    <tr>
+                    <div class="input-group my-2" id="miniGroup{{ counterOfQuestions }}_{{ counterOfAnswers }}">
+                        <td>
+                            <h5 class="Answer">Answer {{ counterOfAnswers }}: {{ a.title }}</h5>
+                        </td>
+
+                        <td>
+                            {% if  a.isCorrect == 1 %}
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input" checked disabled type="checkbox"
+                                           id="checkBox{{ counterOfQuestions }}_{{ counterOfAnswers }}" name="checkbox1_0">
+                                    <label class="custom-control-label"
+                                           for="checkBox{{ counterOfQuestions }}_{{ counterOfAnswers }}"></label>
+                                </div>
+                            {% else %}
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input"  disabled type="checkbox"
+                                           id="checkBox{{ counterOfQuestions }}_{{ counterOfAnswers }}" name="checkbox1_0">
+                                    <label class="custom-control-label"
+                                           for="checkBox{{ counterOfQuestions }}_{{ counterOfAnswers }}"></label>
+                                </div>
+                            {% endif %}
+                        </td>
+                    </div>
+                    </tr>
+                    {% set counterOfAnswers = counterOfAnswers +1 %}
+                {% endfor %}
+            {% set counterOfAnswers = 1 %}
+            {% set counterOfQuestions = counterOfQuestions +1 %}
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -21,7 +21,7 @@ class QuizTable implements \Serializable
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=191, unique=true )
+     * @ORM\Column(type="string", length=191)
      */
     private $title;
 
@@ -29,6 +29,11 @@ class QuizTable implements \Serializable
      * @ORM\Column(type="boolean")
      */
     private $isActive;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $canLook = true;
 
     /**
      * @ORM\Column(type="string", length=191)
@@ -64,6 +69,22 @@ class QuizTable implements \Serializable
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCanLook()
+    {
+        return $this->canLook;
+    }
+
+    /**
+     * @param mixed $canLook
+     */
+    public function setCanLook($canLook): void
+    {
+        $this->canLook = $canLook;
     }
 
     /**

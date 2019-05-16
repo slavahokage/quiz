@@ -348,4 +348,28 @@ class AdminController extends AbstractController
 
         return new JsonResponse($arrayOfQuestions);
     }
+
+    /**
+     * @Route("/admin/deleteQuiz/{quiz}", name="delete_quiz", requirements={"quiz"="\d+"})
+     *
+     */
+    public function deleteQuiz(int $quiz) : Response
+    {
+        $quiz = $this->getDoctrine()->getRepository(QuizTable::class)->find($quiz);
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        if($quiz === null){
+            return $this->redirectToRoute('quiz_list', array('user' => $user));
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($quiz);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Deleted!');
+
+        $quizzes = $this->getDoctrine()->getRepository(QuizTable::class)->findAll();
+
+        return $this->redirectToRoute('admin_edit', array('quizzes' => $quizzes, 'user' => $user));
+    }
 }

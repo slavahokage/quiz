@@ -14,6 +14,12 @@
         <p class="text-success">{{ success }}</p>
     </blockquote>
     {% endif %}
+
+    {% if error is defined %}
+        <blockquote id="success" class="blockquote text-center">
+            <p class="text-danger">{{ error }}</p>
+        </blockquote>
+    {% endif %}
     <div class="input-bar">
         <div class="input-bar-item width100">
             <form class="form-1" name="form1" method="post" action="{{path('get_created_quiz')}}">
@@ -28,9 +34,15 @@
                         <input name="description" type="text" id="inputOfQuiz" required="required"
                                class="form-control width100 mr-2">
                     </div>
-
+                    <div class="input-group my-2">
+                        <strong id="descriptionOfCanLook" style="margin-right: 2%"> Users can look right answers of quiz in the end: </strong>
+                        <div class="custom-control custom-checkbox">
+                            <input class="custom-control-input" type="checkbox" id="canLook" name="canLook">
+                            <label class="custom-control-label" for="canLook"></label>
+                        </div>
+                    </div>
                 </div>
-                <a id="add" class="btn btn-secondary question" href="#" role="button" onClick="AddItem()">Add a
+                <a id="add" class="btn btn-secondary question" href="#" role="button" onClick="AddItem(this)">Add a
                     question</a>
                 <blockquote id = "blockquotesubmit" class="blockquote text-center">
                     <button id = "submitbtn" type="submit" class="btn btn-primary mt-3">Submit</button>
@@ -53,6 +65,9 @@
             let idOfGroup = t.id.replace('delete', '');
             //itemsAnswer.splice(idOfGroup-1,1);
             itemsAnswer[idOfGroup-1] = -1;
+            console.log("#items" + (idOfGroup-1));
+            t.href = "#items" + (idOfGroup-1);
+            document.getElementById('group' + idOfGroup).remove();
             document.getElementById(idOfGroup).remove();
             document.getElementById('text' + idOfGroup).remove();
             document.getElementById('delete' + idOfGroup).remove();
@@ -66,6 +81,7 @@
             document.getElementById('miniGroup' + t.id.replace('deleteMiniGroup', '')).remove();
             document.getElementById('strongAnswerTitle' + t.id.replace('deleteMiniGroup', '')).remove();
             let id = t.id.replace('deleteMiniGroup', '');
+            t.href = "#itemAnswer" + (id);
             let idForDecrease = [];
             let i = 0;
             while (id[i] !== '_') {
@@ -128,10 +144,11 @@
             document.getElementById(idOfGroup).insertBefore(div, document.getElementById('answer' + idOfGroup));
 
             document.getElementById(idOfGroup).insertBefore(strong, document.getElementById("miniGroup" + idOfGroup + "_" + itemsAnswer[idOfGroup - 1]));
+            t.href = "#itemAnswer" + idOfGroup + "_" + itemsAnswer[idOfGroup - 1];
             itemsAnswer[idOfGroup - 1]++;
         }
 
-        function AddItem() {
+        function AddItem(e) {
             itemsAnswer.push(0);
             let newStrong = document.createElement('strong');
             newStrong.innerHTML = 'Title for new question';
@@ -178,9 +195,9 @@
             answerButton.setAttribute("onClick", "addAnswers(this)");
 
             blockquote.appendChild(answerButton);
-
             i.appendChild(blockquote);
 
+            e.href = "#items"+items;
             items++;
             console.log(itemsAnswer);
         }
@@ -189,6 +206,9 @@
         myForm.addEventListener("submit", onSubmit);
 
         function onSubmit(e) {
+            console.log("проверка вопросов -> " + checkQuestions());
+            console.log("проверка ответов -> " + checkAnswers());
+            console.log("проверка колличества правильных ответов -> " + checkCountOfCorrectAnswers());
             if (checkQuestions() === false || checkAnswers() === false || checkCountOfCorrectAnswers() === false){
                 if (checkQuestions() === false){
                     console.log("checkquestions");
@@ -214,9 +234,9 @@
                     let submitbtn = document.getElementById('submitbtn');
                     submitblock.insertBefore(p, submitbtn);
                     hideAlert(p);
-                    e.preventDefault();
                 }
-            }else {
+                e.preventDefault();
+            } else {
                 let div = document.createElement('div');
                 div.setAttribute("id", "success");
                 let p = document.createElement('p');
@@ -251,16 +271,21 @@
         }
 
         function checkCountOfCorrectAnswers() {
-            console.log("i am here");
+            console.log("i am here check count of correct answers");
             let countOfCurrentAnswers = [];
             let arrayOfQuestions = [];
             for (let i = 0; i < itemsAnswer.length; i++){
-                countOfCurrentAnswers.push(0);
+                if (itemsAnswer[i] === -1){
+                    countOfCurrentAnswers.push(1);
+                } else {
+                    countOfCurrentAnswers.push(0);
+                }
             }
 
+            console.log("count of current answers: ");
             console.log(countOfCurrentAnswers);
-            console.log('items ' + items);
-            console.log(itemsAnswer);
+            console.log('items -> ' + items);
+            console.log("item answer -> "+itemsAnswer);
             for (let i = 0; i < items; i++) {
                 for (let j = 0; j < itemsAnswer[i]-1; j++) {
                     console.log(document.getElementById('itemAnswer' + (i + 1) + '_' + (j + 1)));
@@ -276,24 +301,27 @@
                 }
             }
 
-            console.log(arrayOfQuestions);
+            //console.log(arrayOfQuestions);
 
+            console.log("item answer");
+            console.log(itemsAnswer);
             for (let i = 0; i < itemsAnswer.length; i++) {
                 if (document.getElementById('items' + (i + 1))) {
-                    for (let j = 0; j < itemsAnswer[i]-1; j++) {
-                        console.log('checkBox' + (i + 1) + '_' + (j + 1));
-                        if (document.getElementById('checkBox' + (i + 1) + '_' + (j + 1)).checked) {
+                    console.log("item123");
+                    for (let j = 0; j < itemsAnswer[i]; j++) {
+                        console.log('checkBox' + (i + 1) + '_' + (j));
+                        if (document.getElementById('checkBox' + (i + 1) + '_' + (j)).checked) {
                             countOfCurrentAnswers[i]++;
                         }
                     }
                 }
             }
 
-            console.log(countOfCurrentAnswers);
+            console.log("колличество правильных ответов -> " + countOfCurrentAnswers);
 
 
-            for (let i = 0; i < countOfCurrentAnswers.length; i++) {
-                if (countOfCurrentAnswers[i] > 1){
+            for (let i = 0; i < countOfCurrentAnswers.length-1; i++) {
+                if (countOfCurrentAnswers[i] !== 1){
                     return false;
                 }
             }

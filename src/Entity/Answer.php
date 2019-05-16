@@ -26,7 +26,7 @@ class Answer
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isCorrect = 0;
+    private $isCorrect = false;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Question", inversedBy="answers")

@@ -1,16 +1,58 @@
 {% extends 'base.html.twig' %}
 {% block title %}Quiz site{% endblock %}
 {% block body %}
+    <style>
+        @media(max-width: 480px) {
+            td {
+                display: table-row;
+            }
+            .btn {
+                display: block;
+                width: 100%;
+            }
+
+            .lead {
+                display: flex;
+                justify-content: center;
+            }
+
+            .admin{
+                display: flex;
+                justify-content: center;
+                font-size: 50px;
+            }
+
+            .tbl{
+                display: flex;
+                justify-content: center;
+            }
+
+        }
+    </style>
     <div class="jumbotron">
-        <h1 class="display-3">Admin Page</h1>
+        <h1 class="display-3 admin">Admin Page</h1>
         <p class="lead">Here you can create or edit quizzes</p>
         <hr class="my-4">
-        <p class="lead">
-            <a class="btn btn-primary btn-lg mx-2 my-2" href="{{ path('create_quiz') }}" role="button">Create new quiz</a>
-            <a class="btn btn-primary btn-lg mx-2 my-2" href="{{ path('admin_edit') }}" role="button">Edit quiz</a>
-            <a class="btn btn-primary btn-lg mx-2 my-2" href="{{ path('user_list') }}" role="button">Disable users</a>
-            <a class="btn btn-primary btn-lg mx-2 my-2" href="{{ path('ajax_grid') }}" role="button">Ajax grid</a>
-        </p>
+        <div class="tbl">
+            <table>
+                <tr>
+                    <td>
+                        <a class="btn btn-primary btn-lg mx-2 my-2" href="{{ path('create_quiz') }}" role="button">Create new quiz</a>
+                    </td>
+                    <td>
+                        <a class="btn btn-primary btn-lg mx-2 my-2" href="{{ path('admin_edit') }}" role="button">Edit quiz</a>
+                    </td>
+                    <td>
+                        <a class="btn btn-primary btn-lg mx-2 my-2" href="{{ path('user_list') }}" role="button">Disable users</a>
+                    </td>
+                    <td>
+                        <a class="btn btn-primary btn-lg mx-2 my-2" href="{{ path('create_article') }}" role="button">Create article</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+            <!--<a class="btn btn-primary btn-lg mx-2 my-2" href="{{ path('ajax_grid') }}" role="button">Ajax grid</a> -->
+    </div>
 {% endblock %}
 
 {% block javascripts %}

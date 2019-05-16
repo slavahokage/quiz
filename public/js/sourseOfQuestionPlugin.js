@@ -64,7 +64,6 @@
                     },
                     success: function (data) {
                         start = data.output;
-
                     }
                 });
                 $.when(check3).done(function () {

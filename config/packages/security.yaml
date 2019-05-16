@@ -49,4 +49,7 @@ security:
     # Note: Only the *fi  rst* access control that matches will be used
     access_control:
         - { path: ^/questions, roles:  [ROLE_ADMIN, ROLE_USER]  }
+        - { path: ^/edit, roles:  [ROLE_ADMIN, ROLE_USER]  }
         - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/delete, roles:  ROLE_ADMIN  }
+        - { path: ^/download, roles:  ROLE_ADMIN  }

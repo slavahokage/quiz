@@ -9,6 +9,7 @@ use App\Entity\Question;
 use App\Entity\QuizTable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -23,21 +24,23 @@ class TestFormController extends AbstractController
     }
 
     /**
-     * @Route("/admin//getCreatedQuiz", name="get_created_quiz")
+     * @Route("/admin/getCreatedQuiz", name="get_created_quiz")
      */
     public function add() : Response{
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-      /*  foreach ($_POST as $key => $value) {
+/*        foreach ($_POST as $key => $value) {
             echo "Field ".htmlspecialchars($key)." is ".htmlspecialchars($value)."<br>";
-        }*/
-
+        }
+        die();*/
         $entityManager = $this->getDoctrine()->getManager();
         $newQuiz = new QuizTable();
         $newQuiz->setTitle($_POST['title']);
         $newQuiz->setDescription($_POST['description']);
         $newQuiz->setIsActive(1);
         $newQuiz->setDateOfCreation(new \DateTime());
+
+        (isset($_POST['canLook'])) ? $newQuiz->setCanLook($_POST['canLook']) : $newQuiz->setCanLook(false);
 
         $arrayOfQuestions = [];
 
@@ -75,7 +78,7 @@ class TestFormController extends AbstractController
 
 
     /**
-     * @Route("/admin//editQuiz/{quiz}", name="edit_quiz")
+     * @Route("/admin/editQuiz/{quiz}", name="edit_quiz")
      */
     public function editQuiz(int $quiz) : Response{
         $quiz = $this->getDoctrine()->getRepository(QuizTable::class)->find($quiz);
@@ -93,14 +96,13 @@ class TestFormController extends AbstractController
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $quiz = $this->getDoctrine()->getRepository(QuizTable::class)->find($quiz);
         $arrayOfInformation = [];
-        $arrayOfInformation['length'] = sizeof($quiz->getQuestion());
         $arrayOfAnswers = [];
 
         foreach ($quiz->getQuestion() as $question){
-            $arrayOfAnswers[] = sizeof($question->getAnswers())+1;
+            $arrayOfAnswers[] = sizeof($question->getAnswers());
         }
 
-        $arrayOfInformation['answers'] = $arrayOfAnswers;
+        $arrayOfInformation['countOfAnswers'] = $arrayOfAnswers;
         $response = new JsonResponse($arrayOfInformation);
 
         return $response;
@@ -119,6 +121,8 @@ class TestFormController extends AbstractController
         $quiz->setTitle($_POST['title']);
         $quiz->setDescription($_POST['description']);
         $quiz->setIsActive(1);
+
+        (isset($_POST['canLook'])) ? $quiz->setCanLook($_POST['canLook']) : $quiz->setCanLook(false);
         $quiz->setDateOfCreation(new \DateTime());
 
         $quiz->clearQuestion();
@@ -142,7 +146,7 @@ class TestFormController extends AbstractController
             if (strpos($key,"checkbox") !== false){
                 $collectionOfAnswers = $arrayOfQuestions[sizeof($arrayOfQuestions)-1]->getAnswers();
                 $lastAnswer = $collectionOfAnswers[sizeof($collectionOfAnswers)-1];
-                $lastAnswer->setIsCorrect(1);
+                $lastAnswer->setIsCorrect(true);
             }
         }
 
@@ -154,6 +158,6 @@ class TestFormController extends AbstractController
         $entityManager->persist($quiz);
         $entityManager->flush();
 
-        return $this->render('test/editQuiz.html.twig', array('user' => $user, 'success' => 'Successfully update'));
+        return $this->render('test/editQuiz.html.twig', array('quiz' => $quiz, 'user' => $user, 'success' => 'Successfully update'));
     }
 }

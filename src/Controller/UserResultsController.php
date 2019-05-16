@@ -19,6 +19,9 @@ class UserResultsController extends AbstractController
     public function index()
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
+        if($user->getIsActive() == 0){
+            return $this->render('user/ban.html.twig');
+        }
         $resultsOfUser = $this->getDoctrine()->getRepository(ResultOfQuiz::class)->findBy(array('user' => $user));
         $quizes = $this->getDoctrine()->getRepository(QuizTable::class)->findAll();
         $arrayOfResultsAll = array();

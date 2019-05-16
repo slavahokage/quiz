@@ -31,20 +31,13 @@
     <div class="center">
         <div class="content">
             <blockquote class="blockquote text-center">
-                <h1>Edit account</h1>
+                <h1>Create article</h1>
             </blockquote>
             {% for message in app.flashes('success') %}
                 <div class="alert alert-success">
                     {{ message }}
                 </div>
             {% endfor %}
-
-            {% for message in app.flashes('error') %}
-                <p class="text-danger">{{ message }}</p>
-            {% endfor %}
-            <div class="my-custom-class-for-errors">
-                {{ form_errors(form) }}
-            </div>
 
             {{ form_start(form) }}
             <div class="my-custom-class-for-errors">
@@ -53,27 +46,19 @@
 
             <div class="row">
                 <div class="col-2">
-                    {{ form_label(form.username) }}
+                    {{ form_label(form.title) }}
                 </div>
                 <div class="col-10" id="some-custom-id">
-                    {{ form_widget(form.username) }}
+                    {{ form_widget(form.title) }}
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-2">
-                    {{ form_label(form.plainPassword.first) }}
+                    {{ form_label(form.source) }}
                 </div>
                 <div class="col-10" id="some-custom-id">
-                    {{ form_widget(form.plainPassword.first) }}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-2">
-                    {{ form_label(form.plainPassword.second) }}
-                </div>
-                <div class="col-10" id="some-custom-id">
-                    {{ form_widget(form.plainPassword.second) }}
+                    {{ form_widget(form.source) }}
                 </div>
             </div>
             <blockquote class="blockquote text-center">
@@ -89,9 +74,6 @@
         $(function () {
             setTimeout(function() {
                 $('.alert-success').slideUp();
-            }, 3000);
-            setTimeout(function() {
-                $('.text-danger').slideUp();
             }, 3000);
         });
     </script>

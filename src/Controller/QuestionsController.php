@@ -38,15 +38,11 @@ class QuestionsController extends AbstractController
             if ($quiz->getIsActive() == 0) {
                 return $this->redirectToRoute('quiz_list');
             }
-        }
-
-        if ($result != null) {
             if ($result->getIsOver() == 1) {
                 return $this->redirectToRoute('results', array('page' => $page));
             }
         }
 
-        $quiz = $this->getDoctrine()->getRepository(QuizTable::class)->find($page);
         return $this->render('questions/questions.html.twig', array('quiz' => $quiz, 'user'=>$user));
     }
 
@@ -80,6 +76,7 @@ class QuestionsController extends AbstractController
         }
         $topTree = $this->getDoctrine()->getRepository(User::class)->getTopTreeResultsOfUsers($quiz);
         $results = $this->getDoctrine()->getRepository(User::class)->getAllResult($quiz);
+
         return $this->render('questions/results.html.twig',array('user' => $user, 'quiz' => $quiz, 'topTree' =>$topTree, 'results' =>$results));
     }
 
@@ -125,10 +122,15 @@ class QuestionsController extends AbstractController
         }
 
         if ($request->request->has('currentQuestion')) {
-            $result->setCurrentQuestion((int)$request->request->get('currentQuestion'));
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($result);
-                $entityManager->flush();
+            $currentQuestion = (int)$request->request->get('currentQuestion');
+            if ($currentQuestion >= sizeof($result->getQuiz()->getQuestion())) {
+                $result->setIsOver(true);
+            } else {
+                $result->setCurrentQuestion($currentQuestion);
+            }
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($result);
+            $entityManager->flush();
         }
 
         if ($request->request->has('correct')) {
@@ -235,5 +237,20 @@ class QuestionsController extends AbstractController
             return new JsonResponse($arrData);
         }
         return new JsonResponse();
+    }
+
+    /**
+     * @Route("questions/{page}/showRightAnswers", name="right_answers", requirements={"page"="\d+"})
+     *
+     */
+    public function showRightAnswers(Request $request, $page) : Response
+    {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $quiz = $this->getDoctrine()->getRepository(QuizTable::class)->find($page);
+        if ($quiz->getCanLook() === false){
+            return $this->redirectToRoute('quiz_list');
+        }
+
+        return $this->render('questions/showRightAnswers.html.twig',array('user' => $user, 'quiz' => $quiz));
     }
 }

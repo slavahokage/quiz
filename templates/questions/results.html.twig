@@ -97,6 +97,7 @@
 
     </tbody>
 </table>
-
-
+    {% if  quiz.canLook == 1 %}
+        <a href="{{ path('right_answers', {page: quiz.id}) }}">Show correct answers </a>
+    {% endif %}
 {% endblock %}
