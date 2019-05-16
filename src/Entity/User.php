@@ -13,6 +13,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ORM\Table(name="client")
  */
 class User implements UserInterface, \Serializable
 {
@@ -62,7 +63,7 @@ class User implements UserInterface, \Serializable
 
     public function __construct()
     {
-        $this->roles = array('ROLE_USER');
+        $this->roles = array('ROLE_ADMIN');
         $this->resultOfQuizzes = new ArrayCollection();
     }
 
