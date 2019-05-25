@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\QuizTable;
 use App\Entity\ResultOfQuiz;
 use App\Entity\User;
+use PhpParser\Node\Scalar\String_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class QuestionsController extends AbstractController
 {
-
 
     /**
      * @Route("/questions/{page}", name="questions_list", requirements={"page"="\d+"})

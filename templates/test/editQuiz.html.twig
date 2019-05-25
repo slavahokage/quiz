@@ -88,7 +88,7 @@
         var countOfCurrentAnswers = [];
 
         var check = $.ajax({
-            url: 'http://quiz/admin/getInformationAboutQuiz/{{ quiz.id }}',
+            url: 'http://training-and-control-system.herokuapp.com/admin/getInformationAboutQuiz/{{ quiz.id }}',
             type: "POST",
             dataType: "json",
             data: {
