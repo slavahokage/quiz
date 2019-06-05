@@ -20,7 +20,13 @@ class TestFormController extends AbstractController
      */
     public function createQuiz() : Response{
         $user = $this->get('security.token_storage')->getToken()->getUser();
-        return $this->render('test/createQuiz.html.twig', array('user' => $user));
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
+        return $this->render('test/createQuiz.html.twig', array('user' => $user, 'userPhoto' => $userPhoto));
     }
 
     /**
@@ -28,6 +34,12 @@ class TestFormController extends AbstractController
      */
     public function add() : Response{
         $user = $this->get('security.token_storage')->getToken()->getUser();
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
 
 /*        foreach ($_POST as $key => $value) {
             echo "Field ".htmlspecialchars($key)." is ".htmlspecialchars($value)."<br>";
@@ -73,7 +85,7 @@ class TestFormController extends AbstractController
         $entityManager->persist($newQuiz);
         $entityManager->flush();
 
-        return $this->render('test/createQuiz.html.twig', array('user' => $user, 'success' => 'Successfully created'));
+        return $this->render('test/createQuiz.html.twig', array('user' => $user, 'success' => 'Successfully created', 'userPhoto' => $userPhoto));
     }
 
 
@@ -83,10 +95,16 @@ class TestFormController extends AbstractController
     public function editQuiz(int $quiz) : Response{
         $quiz = $this->getDoctrine()->getRepository(QuizTable::class)->find($quiz);
         $user = $this->get('security.token_storage')->getToken()->getUser();
-        if($quiz === null){
-            return $this->redirectToRoute('quiz_list',array('user' => $user));
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
         }
-        return $this->render('test/editQuiz.html.twig', array('user' => $user, 'quiz' => $quiz));
+        if($quiz === null){
+            return $this->redirectToRoute('quiz_list',array('user' => $user, 'userPhoto' => $userPhoto));
+        }
+        return $this->render('test/editQuiz.html.twig', array('user' => $user, 'quiz' => $quiz, 'userPhoto' => $userPhoto));
     }
 
     /**
@@ -94,6 +112,7 @@ class TestFormController extends AbstractController
      */
     public function getInformationAboutQuiz(int $quiz) : Response{
         $user = $this->get('security.token_storage')->getToken()->getUser();
+
         $quiz = $this->getDoctrine()->getRepository(QuizTable::class)->find($quiz);
         $arrayOfInformation = [];
         $arrayOfAnswers = [];
@@ -115,6 +134,12 @@ class TestFormController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $quiz = $this->getDoctrine()->getRepository(QuizTable::class)->find($quiz);
         $user = $this->get('security.token_storage')->getToken()->getUser();
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
         if($quiz === null){
             return $this->redirectToRoute('quiz_list',array('user' => $user));
         }
@@ -158,6 +183,6 @@ class TestFormController extends AbstractController
         $entityManager->persist($quiz);
         $entityManager->flush();
 
-        return $this->render('test/editQuiz.html.twig', array('quiz' => $quiz, 'user' => $user, 'success' => 'Successfully update'));
+        return $this->render('test/editQuiz.html.twig', array('quiz' => $quiz, 'user' => $user, 'success' => 'Successfully update', 'userPhoto' => $userPhoto));
     }
 }

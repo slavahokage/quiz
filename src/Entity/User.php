@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 
 /**
@@ -26,6 +27,7 @@ class User implements UserInterface, \Serializable
 
     /**
      * @ORM\Column(type="string", length=191, unique=true)
+     * @Groups({"api"})
      */
     private $username;
 
@@ -60,11 +62,22 @@ class User implements UserInterface, \Serializable
      */
     private $resultOfQuizzes;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="creator")
+     */
+    private $comments;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\UserPhoto", mappedBy="creator", cascade={"persist", "remove"})
+     * @Groups({"api"})
+     */
+    private $userPhoto;
 
     public function __construct()
     {
         $this->roles = array('ROLE_ADMIN');
         $this->resultOfQuizzes = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
 
@@ -188,6 +201,54 @@ class User implements UserInterface, \Serializable
             if ($resultOfQuiz->getUser() === $this) {
                 $resultOfQuiz->setUser(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getCreator() === $this) {
+                $comment->setCreator(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getUserPhoto(): ?UserPhoto
+    {
+        return $this->userPhoto;
+    }
+
+    public function setUserPhoto(UserPhoto $userPhoto): self
+    {
+        $this->userPhoto = $userPhoto;
+
+        // set the owning side of the relation if necessary
+        if ($this !== $userPhoto->getCreator()) {
+            $userPhoto->setCreator($this);
         }
 
         return $this;

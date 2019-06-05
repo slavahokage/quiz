@@ -8,6 +8,7 @@ use App\Entity\AdminQuizTable;
 use App\Entity\Answer;
 use App\Entity\Question;
 use App\Entity\QuizTable;
+use App\Entity\ResultOfQuiz;
 use App\Entity\User;
 use App\Form\QuestionType2;
 use App\Form\QuestionTypeForEdit2;
@@ -29,7 +30,15 @@ class AdminController extends AbstractController
     public function admin() : Response
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
-        return $this->render('admin/admin.html.twig', array('user' => $user));
+
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
+
+        return $this->render('admin/admin.html.twig', array('user' => $user, 'userPhoto' => $userPhoto));
     }
 
     /**
@@ -40,7 +49,15 @@ class AdminController extends AbstractController
     {
         $quizzes = $this->getDoctrine()->getRepository(QuizTable::class)->findAll();
         $user = $this->get('security.token_storage')->getToken()->getUser();
-        return $this->render('admin/admin_edit.html.twig',array('quizzes' => $quizzes, 'user' => $user));
+
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
+
+        return $this->render('admin/admin_edit.html.twig',array('quizzes' => $quizzes, 'user' => $user, 'userPhoto' => $userPhoto));
     }
 
     /**
@@ -51,15 +68,23 @@ class AdminController extends AbstractController
     {
         $quiz = $this->getDoctrine()->getRepository(QuizTable::class)->find($quiz);
         $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
+
         if($quiz === null){
-            return $this->redirectToRoute('quiz_list', array('user' => $user));
+            return $this->redirectToRoute('quiz_list', array('user' => $user, 'userPhoto' => $userPhoto));
         }
 
         $quiz->setIsActive(false);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->flush();
         $quizzes = $this->getDoctrine()->getRepository(QuizTable::class)->findAll();
-        return $this->render('admin/admin_edit.html.twig',array('quizzes' => $quizzes, 'user' => $user));
+        return $this->render('admin/admin_edit.html.twig',array('quizzes' => $quizzes, 'user' => $user,  'userPhoto' => $userPhoto));
     }
 
     /**
@@ -70,15 +95,23 @@ class AdminController extends AbstractController
     {
         $quiz = $this->getDoctrine()->getRepository(QuizTable::class)->find($quiz);
         $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
+
         if($quiz === null){
-            return $this->redirectToRoute('quiz_list', array('user' => $user));
+            return $this->redirectToRoute('quiz_list', array('user' => $user, 'userPhoto' => $userPhoto));
         }
 
         $quiz->setIsActive(true);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->flush();
         $quizzes = $this->getDoctrine()->getRepository(QuizTable::class)->findAll();
-        return $this->render('admin/admin_edit.html.twig',array('quizzes' => $quizzes, 'user' => $user));
+        return $this->render('admin/admin_edit.html.twig',array('quizzes' => $quizzes, 'user' => $user, 'userPhoto' => $userPhoto));
     }
 
     /**
@@ -88,8 +121,16 @@ class AdminController extends AbstractController
     public function userList() : Response
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
+
         $users = $this->getDoctrine()->getRepository(User::class)->findAll();
-        return $this->render('user/userlist.html.twig',array('users' => $users, 'user' => $user));
+        return $this->render('user/userlist.html.twig',array('users' => $users, 'user' => $user, 'userPhoto' => $userPhoto));
     }
 
     /**
@@ -117,8 +158,16 @@ class AdminController extends AbstractController
     {
         $quiz = $this->getDoctrine()->getRepository(QuizTable::class)->find($quiz);
         $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
+
         if($quiz === null){
-            return $this->redirectToRoute('quiz_list',array('user' => $user));
+            return $this->redirectToRoute('quiz_list',array('user' => $user, 'userPhoto' => $userPhoto));
         }
 
         $form = $this->createForm(QuizTableTypeForEdit::class, $quiz);
@@ -130,17 +179,17 @@ class AdminController extends AbstractController
             if ($questions[0] == null) {
                 return $this->render(
                     'admin/admin_questions.html.twig',
-                    array('form' => $form->createView(), 'error' => 'Something went wrong! Input at least one answer!', 'user' => $user)
+                    array('form' => $form->createView(), 'error' => 'Something went wrong! Input at least one answer!', 'user' => $user, 'userPhoto' => $userPhoto)
                 );
             }
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->flush();
-            return $this->redirectToRoute('edit_answers', array('quiz' => $quiz->getId(), 'number' => 0, 'user' => $user ));
+            return $this->redirectToRoute('edit_answers', array('quiz' => $quiz->getId(), 'number' => 0, 'user' => $user, 'userPhoto' => $userPhoto ));
         }
 
         return $this->render('admin/admin_questions.html.twig', array(
-            'form' => $form->createView(), 'user' => $user));
+            'form' => $form->createView(), 'user' => $user, 'userPhoto' => $userPhoto));
     }
 
     /**
@@ -151,8 +200,16 @@ class AdminController extends AbstractController
     {
         $quizForAnswers = $this->getDoctrine()->getRepository(QuizTable::class)->find($quiz);
         $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
+
         if($quizForAnswers === null){
-            return $this->redirectToRoute('quiz_list', array('user' => $user));
+            return $this->redirectToRoute('quiz_list', array('user' => $user, 'userPhoto' => $userPhoto));
         }
 
         $questions = $quizForAnswers->getQuestion();
@@ -165,7 +222,7 @@ class AdminController extends AbstractController
             if ($currentQuestion->getAnswers()[0] == null) {
                 return $this->render(
                     'admin/admin_answers.html.twig',
-                    array('form' => $form->createView(), 'error' => 'Something went wrong! Input at least one answer!', 'user' => $user)
+                    array('form' => $form->createView(), 'error' => 'Something went wrong! Input at least one answer!', 'user' => $user, 'userPhoto' => $userPhoto)
                 );
             }
 
@@ -181,7 +238,7 @@ class AdminController extends AbstractController
             if ($countOfCorrectAnswers != 1) {
                 return $this->render(
                     'admin/admin_answers.html.twig',
-                    array('form' => $form->createView(), 'error' => 'Something went wrong! More then one correct answer or no at all!', 'user' => $user)
+                    array('form' => $form->createView(), 'error' => 'Something went wrong! More then one correct answer or no at all!', 'user' => $user, 'userPhoto' => $userPhoto)
                 );
             }
 
@@ -189,12 +246,12 @@ class AdminController extends AbstractController
             $entityManager->flush();
             $number++;
             if($questions[$number] == null){
-                return $this->render('admin/admin_successfully_update.html.twig', array('user' => $user));
+                return $this->render('admin/admin_successfully_update.html.twig', array('user' => $user, 'userPhoto' => $userPhoto));
             }
-            return $this->redirectToRoute('edit_answers', array('quiz' => $quiz, 'number' =>$number, 'user' => $user));
+            return $this->redirectToRoute('edit_answers', array('quiz' => $quiz, 'number' =>$number, 'user' => $user, 'userPhoto' => $userPhoto));
         }
 
-        return $this->render('admin/admin_answers.html.twig', array('form' => $form->createView(), 'user' => $user));
+        return $this->render('admin/admin_answers.html.twig', array('form' => $form->createView(), 'user' => $user, 'userPhoto' => $userPhoto));
     }
 
     /**
@@ -205,8 +262,14 @@ class AdminController extends AbstractController
     {
         $quizForAnswers = $this->getDoctrine()->getRepository(AdminQuizTable::class)->find($quiz);
         $user = $this->get('security.token_storage')->getToken()->getUser();
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
         if($quizForAnswers === null){
-            return $this->redirectToRoute('quiz_list', array('user' => $user));
+            return $this->redirectToRoute('quiz_list', array('user' => $user, 'userPhoto' => $userPhoto));
         }
 
         $questions = $quizForAnswers->getQuestion();
@@ -219,7 +282,7 @@ class AdminController extends AbstractController
             if ($currentQuestion->getAnswers()[0] == null) {
                 return $this->render(
                     'admin/admin_answers.html.twig',
-                    array('form' => $form->createView(), 'error' => 'Something went wrong! Input at least one answer!', 'user' => $user)
+                    array('form' => $form->createView(), 'error' => 'Something went wrong! Input at least one answer!', 'user' => $user,  'userPhoto' => $userPhoto)
                 );
             }
 
@@ -235,7 +298,7 @@ class AdminController extends AbstractController
             if ($countOfCorrectAnswers != 1) {
                 return $this->render(
                     'admin/admin_answers.html.twig',
-                    array('form' => $form->createView(), 'error' => 'Something went wrong! More then one correct answer or no at all!', 'user' => $user)
+                    array('form' => $form->createView(), 'error' => 'Something went wrong! More then one correct answer or no at all!', 'user' => $user,  'userPhoto' => $userPhoto)
                 );
             }
 
@@ -280,13 +343,14 @@ class AdminController extends AbstractController
             $entityManager->remove($quizForAnswers);
             $entityManager->persist($userQuiz);
             $entityManager->flush();
-            return $this->render('admin/admin_successfully_create.twig', array('user' => $user));
+            return $this->render('admin/admin_successfully_create.twig', array('user' => $user, 'userPhoto' => $userPhoto));
         }
 
 
         return $this->render('admin/admin_answers.html.twig', array(
             'form' => $form->createView(),
-            'user' => $user
+            'user' => $user,
+            'userPhoto' => $userPhoto
         ));
     }
 
@@ -298,6 +362,13 @@ class AdminController extends AbstractController
     {
         $quiz = new AdminQuizTable();
         $user = $this->get('security.token_storage')->getToken()->getUser();
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
+
         $form = $this->createForm(QuizTableType::class, $quiz);
 
         $form->handleRequest($request);
@@ -308,7 +379,7 @@ class AdminController extends AbstractController
                 if ($quiz->getQuestion()[0] == null) {
                     return $this->render(
                         'admin/admin_questions.html.twig',
-                        array('form' => $form->createView(), 'error' => 'Something went wrong! Input at least one question!', 'user'=>$user)
+                        array('form' => $form->createView(), 'error' => 'Something went wrong! Input at least one question!', 'user'=>$user,  'userPhoto' => $userPhoto)
                     );
                 }
                 $quiz->setCurrentQuestion(0);
@@ -318,14 +389,15 @@ class AdminController extends AbstractController
             } catch (\Exception $e) {
                 return $this->render(
                     'admin/admin_questions.html.twig',
-                    array('form' => $form->createView(), 'error' => 'Something went wrong! This quiz is already exists!', 'user' => $user)
+                    array('form' => $form->createView(), 'error' => 'Something went wrong! This quiz is already exists!', 'user' => $user,  'userPhoto' => $userPhoto)
                 );
             }
         }
 
         return $this->render('admin/admin_questions.html.twig', array(
             'form' => $form->createView(),
-            'user' => $user
+            'user' => $user,
+            'userPhoto' => $userPhoto
         ));
     }
 
@@ -358,6 +430,13 @@ class AdminController extends AbstractController
         $quiz = $this->getDoctrine()->getRepository(QuizTable::class)->find($quiz);
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
+
         if($quiz === null){
             return $this->redirectToRoute('quiz_list', array('user' => $user));
         }
@@ -370,6 +449,34 @@ class AdminController extends AbstractController
 
         $quizzes = $this->getDoctrine()->getRepository(QuizTable::class)->findAll();
 
-        return $this->redirectToRoute('admin_edit', array('quizzes' => $quizzes, 'user' => $user));
+        return $this->redirectToRoute('admin_edit', array('quizzes' => $quizzes, 'user' => $user, 'userPhoto' => $userPhoto));
+    }
+
+    /**
+     * @Route("/admin/userResults/{user}", name="admin_user_results", requirements={"user"="\d+"})
+     *
+     */
+    public function adminUserResults(int $user) : Response
+    {
+        $user = $this->getDoctrine()->getRepository(User::class)->find($user);
+
+        $admin = $this->get('security.token_storage')->getToken()->getUser();
+        $userPhoto = $admin->getUserPhoto();
+
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
+
+        $resultsOfUser = $this->getDoctrine()->getRepository(ResultOfQuiz::class)->findBy(array('user' => $user));
+        $quizes = $this->getDoctrine()->getRepository(QuizTable::class)->findAll();
+        $arrayOfResultsAll = array();
+        foreach ($quizes as $q) {
+            if($this->getDoctrine()->getRepository(User::class)->getAllResult($q) != null){
+                array_push($arrayOfResultsAll, $this->getDoctrine()->getRepository(User::class)->getAllResult($q));
+            }
+        }
+        return $this->render('admin/admin_user_results.twig', array('user' => $user, 'resultsOfUser' => $resultsOfUser, 'arrayOfResultsAll' => $arrayOfResultsAll, 'userPhoto' => $userPhoto));
     }
 }

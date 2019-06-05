@@ -1,7 +1,31 @@
 {% extends 'base.html.twig' %}
 {% block title %}Quiz site{% endblock %}
 {% block body %}
+    <style>
+        .userPhoto{
+            width: 32px;
+            height: 32px;
+            border-radius: 100%;
+            margin-right: 1%;
+        }
+        .comment{
+            width: 64px;
+            height: 64px;
+        }
 
+        .document{
+            width: 64px;
+            height: 64px;
+        }
+
+        .notLoaded{
+            display: none;
+        }
+
+        .Loaded{
+
+        }
+    </style>
     {% if app.user == false %}
         <div class="jumbotron">
             <h1 class="display-3">Hello!</h1>
@@ -19,7 +43,7 @@
         <hr>
         {% if articles|length > 0 %}
             {% for article in articles %}
-                <ol class="breadcrumb" style="background-color: lightblue">
+                <ol id="block{{ article.id }}" class="breadcrumb" style="background-color: lightblue">
                     <div class="jumbotron-fluid red">
                         <h1 class="display-5">{{article.title}}</h1>
                         <p class="lead">file: {{article.realName}}</p>
@@ -34,6 +58,13 @@
                                href="delete/{{ article.source }}"
                                role="button" id="delete">Delete!</a>
                             {% endif %}
+                            <br>
+                            <a id="comments{{ article.id }}" href="#" onclick="showComments({{ article.id }})">Show comments</a>
+                            <br>
+                            <div class="notLoaded" id="commentsArticle{{ article.id }}">
+
+                            </div>
+                            <input onclick="addForm(this)" id="commentForArticle{{ article.id }}" type="image" class="comment" src="https://cdn0.iconfinder.com/data/icons/free-daily-icon-set/512/Comments-512.png" />
                         </p>
                     </div>
                 </ol>
@@ -46,4 +77,185 @@
 
 {% block javascripts %}
     <script src='{{ asset('js/quizcookie.js') }}'></script>
+    <script>
+        function show(el) {
+            el.style.display = "";
+        }
+
+        function hide(el) {
+            el.style.display = "none";
+        }
+
+        function addForm(e) {
+            let id = e.id.replace("commentForArticle", "");
+            let formId = "commentArticle" + id;
+            let form =  document.getElementById(formId);
+
+            if (form && form.style.display !== 'none') {
+                hide(form);
+            } else if (form && form.style.display === 'none') {
+                show(form);
+            } else {
+                let photo = document.getElementById("userPhoto").getAttribute('src');
+                let form = `<form onsubmit="return addComment(this, ${id});" action="/createComment" method="POST" enctype="multipart/form-data" id="${formId}" style="width:100%">
+                        <div class="input-group my-2" id="test">
+                        <div style="margin-top: 1%; margin-right: 1%" class="edititem inline">
+                        <img src="${photo}">
+                        </div>
+                        <textarea id="titleForArticle${id}" required name="title" style="margin-right: 1%; width: 50%; resize: none"></textarea>
+                        <input id="fileForArticle${id}" name="file" style="margin-top: 1%" type="file">
+                        <button type="submit" class="btn btn-primary mt-3">Send!</button>
+                        </div>
+                        <input name="article" value="${id}" style="display: none">
+                        </form>`;
+
+                document.getElementById("block" + id).insertAdjacentHTML('beforeend', form);
+            }
+
+        }
+
+        function addComment(e, id) {
+            let data = new FormData();
+            let file = $('#fileForArticle'+id).prop('files')[0];
+            let title = $('#titleForArticle'+id).val();
+            data.append('file', file);
+            data.append('article', id);
+            data.append('title', title);
+            $.ajax({
+                url: '/createComment',
+                data: data,
+                cache: false,
+                dataType: 'text',
+                contentType: false,
+                processData: false,
+                method: 'POST',
+                type: 'POST',
+                success: function(data){
+                    let response = JSON.parse(data);
+                    if (response.response === 'ok') {
+                        let commentsBlock = document.getElementById("commentsArticle" + id);
+                        if (!commentsBlock.classList.contains("notLoaded")) {
+                            let newComment = `<div id="commentsArticle${id}_${response.id}"><hr><h5>${title}</h5>`;
+                            console.log(response.time);
+                            let date = new Date(Date.parse(response.time.date));
+                            console.log(date);
+                            let name = document.getElementById("nameOfUser").innerHTML;
+                            let photo = document.getElementById("userPhoto").getAttribute('src');
+                            let deleteBlock = `<img id="${"DeleteComment"+response.id}" onclick="deleteComment(${id},${response.id})" class="userPhoto Delete" src="https://api.icons8.com/download/62a92be89dfeaf8aad2ac897c989cae6875429c2/windows8/PNG/512/Industry/trash-512.png">`;
+                            let testData = `<h5><img class="userPhoto" src="${photo}"> posted by <b>${name}</b> at ${formatTime(date)}${deleteBlock}</h5>`;
+                            if (response.hash !== null) {
+                                file = `<img class="document" src="http://www.iconhot.com/icon/png/devine/256/file-3.png"><h5>${response.realName} </h5><a class="btn btn-primary btn-lg" href="/download/${response.hash}" role="button">Download!</a></hr></div>`;
+                            } else {
+                                file = `</hr></div>`;
+                            }
+                            let textWithFile = newComment + testData + file;
+
+                            commentsBlock.insertAdjacentHTML('beforeend', textWithFile);
+                        }
+                    }
+                }
+            });
+            return false;
+        }
+
+        function showComments(id) {
+            let comments;
+            let showComments = document.getElementById("comments"+id);
+            let commentsBlock = document.getElementById("commentsArticle" + id);
+            if (commentsBlock.classList.contains("Loaded")  && commentsBlock.style.display !== 'none') {
+                hide(commentsBlock);
+                showComments.innerHTML = "Show comments";
+                commentsBlock.style.display = 'none'
+            } else if (commentsBlock.classList.contains("Loaded") && commentsBlock.style.display === 'none') {
+                show(commentsBlock);
+                showComments.innerHTML = "Hide comments";
+                commentsBlock.style.display = '';
+            } else {
+                showComments.after(commentsBlock);
+                var check = $.ajax({
+                    url: '/showComments',
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        "article": id
+                    },
+                    success: function (data) {
+                        comments = data;
+                        console.log(comments)
+                    }
+                });
+                $.when(check).done(function () {
+                    comments.forEach(function (item, i, arr) {
+                        console.log(item.title);
+                        let textOfComment = `<div id="commentsArticle${id}_${item.id}"><hr><h5>${item.title}</h5>`;
+                        let date = new Date(Date.parse(item.dateOfCreation));
+                        let url = 'https://static.thenounproject.com/png/17241-200.png';
+                        if (item.creator.userPhoto !== null) {
+                            let googleDiskPath = "https://drive.google.com/uc?id=";
+                            let idOfPhotoUser = item.creator.userPhoto.source;
+                            url = googleDiskPath+idOfPhotoUser;
+                        }
+                        let deleteBlock = '';
+                        let user = '{{ user.username }}';
+                        if (user === item.creator.username){
+                            deleteBlock = `<img id="${"DeleteComment"+item.id}" onclick="deleteComment(${id},${item.id})" class="userPhoto Delete" src="https://api.icons8.com/download/62a92be89dfeaf8aad2ac897c989cae6875429c2/windows8/PNG/512/Industry/trash-512.png">`;
+                        }
+                        let testData = `<h5><img class="userPhoto" src="${url}">posted by <b>${item.creator.username}</b> at ${formatTime(date)} ${deleteBlock}</h5>`;
+                        let file;
+                        if (item.source !== null) {
+                            file = `<img class="document" src="http://www.iconhot.com/icon/png/devine/256/file-3.png"><h5>${item.real_name} </h5><a class="btn btn-primary btn-lg" href="/download/${item.source}" role="button">Download!</a></hr></div>`;
+                        } else {
+                            file = `</hr></div>`;
+                        }
+
+                        let textWithFile = textOfComment+testData+file;
+
+                        commentsBlock.insertAdjacentHTML('beforeend', textWithFile);
+                        showComments.innerHTML = "Hide comments";
+
+                    });
+                });
+                showComments.href = "#commentsArticle"+id;
+                commentsBlock.classList.remove("notLoaded");
+                commentsBlock.className += " Loaded";
+                showComments.innerHTML = "Hide comments";
+
+            }
+        }
+
+        function formatTime(date) {
+            let dd = date.getDate();
+            let mm = date.getMonth() + 1;
+            let yyyy = date.getFullYear();
+            let hours = date.getHours();
+            let minutes = date.getMinutes();
+            let seconds = date.getSeconds();
+
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            date = yyyy+ '/' +dd + '/'+ mm + ' ' + hours + ':' + minutes + ':' + seconds;
+
+            return date;
+        }
+
+        function deleteComment(a,e) {
+            let check = $.ajax({
+                url: '/deleteComment',
+                type: "POST",
+                dataType: "json",
+                data: {
+                    "comment": e
+                },
+                success: function (data) {
+                    if (data.response === "ok"){
+                        document.getElementById("commentsArticle"+a+"_"+e).remove();
+                    }
+                }
+            });
+        }
+    </script>
 {% endblock %}

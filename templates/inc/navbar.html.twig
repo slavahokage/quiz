@@ -47,9 +47,9 @@
                         <div class="btn-group" role="group">
                             <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle inline"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="caret"> {{ app.user.username }}</span>
+                                <span id="nameOfUser" class="caret"> {{ app.user.username }}</span>
                                 <div class="edititem inline">
-                                    <img src="https://static.thenounproject.com/png/17241-200.png">
+                                    <img id="userPhoto" src="{{ userPhoto }}">
                                 </div>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start"

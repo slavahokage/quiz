@@ -1,15 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: vyacheslav
- * Date: 3/7/19
- * Time: 1:17 PM
- */
 
 namespace App\Controller;
 
-
 use App\Entity\Article;
+use App\Entity\Comment;
 use App\Entity\QuizTable;
 use App\Entity\ResultOfQuiz;
 use App\Form\ArticleType;
@@ -33,13 +27,21 @@ class ArticleController extends AbstractController
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
+        $userPhoto = $user->getUserPhoto();
+
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
+
         if($user->getIsActive() == 0){
-            return $this->render('user/ban.html.twig');
+            return $this->render('user/ban.html.twig', array('userPhoto' => $userPhoto));
         }
 
         $articles = $this->getDoctrine()->getRepository(Article::class)->findAll();
 
-        return $this->render('articles/listOfArticles.html.twig', array('articles' => $articles, 'user' => $user));
+        return $this->render('articles/listOfArticles.html.twig', array('articles' => $articles, 'user' => $user, 'userPhoto' => $userPhoto));
     }
 
     /**
@@ -49,6 +51,13 @@ class ArticleController extends AbstractController
     public function createArticle(Request $request)
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
 
         $form = $this->createForm(ArticleType::class);
         $form->handleRequest($request);
@@ -76,13 +85,15 @@ class ArticleController extends AbstractController
 
             return $this->render('articles/createArticle.html.twig', [
                 'form' => $form->createView(),
-                'user' => $user
+                'user' => $user,
+                'userPhoto' => $userPhoto
             ]);
         }
 
         return $this->render('articles/createArticle.html.twig', [
             'form' => $form->createView(),
-            'user' => $user
+            'user' => $user,
+            'userPhoto' => $userPhoto
         ]);
     }
 
@@ -94,11 +105,22 @@ class ArticleController extends AbstractController
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
+
         if($user->getIsActive() == 0){
-            return $this->render('user/ban.html.twig');
+            return $this->render('user/ban.html.twig', array('userPhoto' => $userPhoto));
         }
 
         $file = $this->getDoctrine()->getRepository(Article::class)->findOneBy(['source' => $filename]);
+
+        if ($file === null) {
+            $file = $this->getDoctrine()->getRepository(Comment::class)->findOneBy(['source' => $filename]);
+        }
 
         $response = new StreamedResponse();
         $disposition = HeaderUtils::makeDisposition(
@@ -123,12 +145,15 @@ class ArticleController extends AbstractController
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        if($user->getIsActive() == 0){
-            return $this->render('user/ban.html.twig');
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
         }
 
         if($user->getIsActive() == 0){
-            return $this->render('user/ban.html.twig');
+            return $this->render('user/ban.html.twig', array('userPhoto' => $userPhoto));
         }
 
         $article = $this->getDoctrine()->getRepository(Article::class)->findOneBy(['source' => $filename]);
@@ -141,6 +166,6 @@ class ArticleController extends AbstractController
 
         $articles = $this->getDoctrine()->getRepository(Article::class)->findAll();
 
-        return $this->redirectToRoute('article_list', array('articles' => $articles, 'user' => $user));
+        return $this->redirectToRoute('article_list', array('articles' => $articles, 'user' => $user, 'userPhoto' => $userPhoto));
     }
 }

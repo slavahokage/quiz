@@ -10,7 +10,10 @@ namespace App\Form;
 
 
 use App\Entity\User;
+use App\Entity\UserPhoto;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -23,11 +26,11 @@ class EditUserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('username', TextType::class, ['attr' => array('placeholder' => 'Username  ')])
+            ->add('username', TextType::class, ['attr' => array('placeholder' => 'Username'), 'required' => false])
             ->add('plainPassword', RepeatedType::class, array(
                 'type' => PasswordType::class,
                 'first_options'  => array('label' => 'Password', 'attr' => array('placeholder' => 'Password')),
-                'second_options' => array('label' => 'Repeat Password','attr' => array('placeholder' => 'Repeat Password'))
+                'second_options' => array('label' => 'Repeat Password','attr' => array('placeholder' => 'Repeat Password')),
             ))
             ->add('send', SubmitType::class, array('label' => 'Submit', 'attr' => array('class' => 'btn btn-primary mt-3')));
         ;

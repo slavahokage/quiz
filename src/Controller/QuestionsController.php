@@ -24,8 +24,16 @@ class QuestionsController extends AbstractController
     public function index(int $page): Response
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
+
         if($user->getIsActive() == 0){
-            return $this->render('user/ban.html.twig');
+            return $this->render('user/ban.html.twig', array('userPhoto' => $userPhoto));
         }
         $quiz = $this->getDoctrine()->getRepository(QuizTable::class)->find($page);
 
@@ -43,7 +51,7 @@ class QuestionsController extends AbstractController
             }
         }
 
-        return $this->render('questions/questions.html.twig', array('quiz' => $quiz, 'user'=>$user));
+        return $this->render('questions/questions.html.twig', array('quiz' => $quiz, 'user'=>$user, 'userPhoto' => $userPhoto));
     }
 
     /**
@@ -53,8 +61,15 @@ class QuestionsController extends AbstractController
     public function showResults(int $page) : Response
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
+
         if($user->getIsActive() == 0){
-            return $this->render('user/ban.html.twig');
+            return $this->render('user/ban.html.twig', array('userPhoto' => $userPhoto));
         }
 
         $quiz = $this->getDoctrine()->getRepository(QuizTable::class)->find($page);
@@ -77,7 +92,7 @@ class QuestionsController extends AbstractController
         $topTree = $this->getDoctrine()->getRepository(User::class)->getTopTreeResultsOfUsers($quiz);
         $results = $this->getDoctrine()->getRepository(User::class)->getAllResult($quiz);
 
-        return $this->render('questions/results.html.twig',array('user' => $user, 'quiz' => $quiz, 'topTree' =>$topTree, 'results' =>$results));
+        return $this->render('questions/results.html.twig',array('user' => $user, 'quiz' => $quiz, 'topTree' =>$topTree, 'results' =>$results, 'userPhoto' => $userPhoto));
     }
 
 
@@ -246,11 +261,17 @@ class QuestionsController extends AbstractController
     public function showRightAnswers(Request $request, $page) : Response
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
+        $userPhoto = $user->getUserPhoto();
+        if ($userPhoto === null){
+            $userPhoto = 'https://static.thenounproject.com/png/17241-200.png';
+        } else {
+            $userPhoto = 'https://drive.google.com/uc?id=' . $userPhoto->getSource();
+        }
         $quiz = $this->getDoctrine()->getRepository(QuizTable::class)->find($page);
         if ($quiz->getCanLook() === false){
             return $this->redirectToRoute('quiz_list');
         }
 
-        return $this->render('questions/showRightAnswers.html.twig',array('user' => $user, 'quiz' => $quiz));
+        return $this->render('questions/showRightAnswers.html.twig',array('user' => $user, 'quiz' => $quiz, 'userPhoto' => $userPhoto));
     }
 }

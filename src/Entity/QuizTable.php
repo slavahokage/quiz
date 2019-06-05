@@ -40,12 +40,10 @@ class QuizTable implements \Serializable
      */
     private $description;
 
-
     /**
      * @ORM\Column(type="datetime")
      */
     private $dateOfCreation;
-
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Question", inversedBy="quizTables",  cascade={"persist", "remove"})
@@ -57,11 +55,17 @@ class QuizTable implements \Serializable
      */
     private $resultOfQuizzes;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="quiz")
+     */
+    private $comments;
+
 
     public function __construct()
     {
         $this->Question = new ArrayCollection();
         $this->resultOfQuizzes = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
 
@@ -216,6 +220,37 @@ class QuizTable implements \Serializable
             $this->resultOfQuizzes->removeElement($resultOfQuiz);
             if ($resultOfQuiz->getQuiz() === $this) {
                 $resultOfQuiz->setQuiz(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setQuiz($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getQuiz() === $this) {
+                $comment->setQuiz(null);
             }
         }
 
